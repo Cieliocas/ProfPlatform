@@ -57,5 +57,46 @@ export const authService = {
         // A melhor forma é confiar se getCurrentUser retorna sucesso ou erro.
         // Simulando que sempre deve tentar validar:
         return true;
+    },
+
+    async deleteAccount(password: string): Promise<void> {
+        const response = await fetch('/api/auth/delete-account', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ password }),
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw { response: { data } };
+        }
+    },
+
+    async updateProfile(data: Partial<User>): Promise<User> {
+        // Envia direto via api proxy (requer Auth) ou criamos wrapper Next.js
+        // Neste caso, vamos usar o proxy local do next configurado em apl/api/proxy/[...path]/route.ts
+        const response = await fetch('/api/proxy/api/v1/auth/me', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.detail || "Erro ao atualizar perfil");
+        }
+        return await response.json();
+    },
+
+    async getPublicProfile(id: number | string): Promise<User> {
+        const response = await fetch(`/api/proxy/api/v1/auth/${id}`);
+        if (!response.ok) {
+            throw new Error("Usuário não encontrado");
+        }
+        return await response.json();
     }
 };

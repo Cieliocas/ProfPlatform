@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { Plus } from "lucide-react"
 import { Navbar } from "@/components/navbar"
@@ -15,7 +15,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { experiences } from "@/lib/mock-data"
+import { experienceService } from "@/src/services/experienceService"
+import { Loader2 } from "lucide-react"
 
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
@@ -23,6 +24,18 @@ export default function DashboardPage() {
   const [selectedDiscipline, setSelectedDiscipline] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all") // all, suzianne, uespi
+
+  const [experiences, setExperiences] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    experienceService.fetchExperiences()
+      .then((data: any[]) => {
+        setExperiences(data)
+      })
+      .catch((err: any) => console.error("Erro ao buscar experiências reais", err))
+      .finally(() => setLoading(false))
+  }, [])
 
   const filteredExperiences = useMemo(() => {
     return experiences.filter((exp) => {
@@ -44,20 +57,20 @@ export default function DashboardPage() {
 
       const matchesTags =
         selectedTags.length === 0 ||
-        selectedTags.some((t) => exp.tags.includes(t))
+        selectedTags.some((t) => (exp.tags || []).includes(t))
 
       const matchesTab =
         activeTab === "all" ||
-        (activeTab === "suzianne" && exp.author.name === "Ana Beatriz Silva")
+        (activeTab === "suzianne" && exp.author_id === 1) // Supondo ID 1 para u. mock. Ajuste se for nome
 
       return matchesSearch && matchesClassification && matchesDiscipline && matchesTags && matchesTab
     })
-  }, [search, selectedClassification, selectedDiscipline, selectedTags, activeTab])
+  }, [search, selectedClassification, selectedDiscipline, selectedTags, activeTab, experiences])
 
   // Get only Suzianne's experiences for the Featured Carousel
   const featuredExperiences = useMemo(() => {
-    return experiences.filter((exp) => exp.author.name === "Ana Beatriz Silva")
-  }, [])
+    return experiences.filter((exp: any) => exp.author_id === 1 || exp.author?.name === "Ana Beatriz Silva")
+  }, [experiences])
 
   function handleTagToggle(tag: string) {
     setSelectedTags((prev) =>

@@ -7,6 +7,21 @@ class UserBase(BaseModel):
     name: str
     email: EmailStr
     bio: Optional[str] = None
+    
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    location_country: Optional[str] = "Brasil"
+    graduation_level: Optional[str] = None
+    workplace: Optional[str] = None
+    
+    instagram_link: Optional[str] = None
+    email_link: Optional[str] = None
+    custom_link: Optional[str] = None
+    
+    show_location: bool = True
+    show_graduation: bool = True
+    show_workplace: bool = True
+    show_socials: bool = True
 
 class UserCreate(UserBase):
     password: str
@@ -18,6 +33,49 @@ class UserResponse(UserBase):
     class Config:
         from_attributes = True
 
+class UserUpdate(BaseModel):
+    name: Optional[str] = None
+    bio: Optional[str] = None
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    location_country: Optional[str] = None
+    graduation_level: Optional[str] = None
+    workplace: Optional[str] = None
+    instagram_link: Optional[str] = None
+    email_link: Optional[str] = None
+    custom_link: Optional[str] = None
+    show_location: Optional[bool] = None
+    show_graduation: Optional[bool] = None
+    show_workplace: Optional[bool] = None
+    show_socials: Optional[bool] = None
+
+class UserPublicResponse(BaseModel):
+    id: int
+    name: str
+    bio: Optional[str] = None
+    created_at: datetime
+    
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    location_country: Optional[str] = None
+    graduation_level: Optional[str] = None
+    workplace: Optional[str] = None
+    
+    instagram_link: Optional[str] = None
+    email_link: Optional[str] = None
+    custom_link: Optional[str] = None
+    
+    show_location: bool = True
+    show_graduation: bool = True
+    show_workplace: bool = True
+    show_socials: bool = True
+    
+    class Config:
+        from_attributes = True
+
+class UserDelete(BaseModel):
+    password: str
+
 # --- Autenticação ---
 class Token(BaseModel):
     access_token: str
@@ -26,23 +84,38 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
 
+# --- Attachment Schemas ---
+class AttachmentBase(BaseModel):
+    file_name: str
+    file_type: str
+    file_url: str
+
+class AttachmentResponse(AttachmentBase):
+    id: int
+    experience_id: int
+    created_at: datetime
+    
+    class Config:
+        from_attributes = True
+
 # --- Experience Schemas ---
 class ExperienceBase(BaseModel):
     title: str
     content: str
     classification: str
     discipline: str
-    attachments: List[str] = []
     tags: List[str] = []
 
 class ExperienceCreate(ExperienceBase):
-    pass
+    attachments: List[AttachmentBase] = []
 
 class ExperienceResponse(ExperienceBase):
     id: int
     author_id: int
     upvotes: int
     created_at: datetime
+    author: UserResponse
+    attachments: List[AttachmentResponse] = []
     
     class Config:
         from_attributes = True

@@ -45,7 +45,7 @@ services:
       - /app/node_modules
       - /app/.next
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_API_URL=http://backend:8000
       # Binding next host
       - HOST=0.0.0.0
       - CHOKIDAR_USEPOLLING=true

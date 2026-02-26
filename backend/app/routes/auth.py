@@ -92,3 +92,60 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get("/me", response_model=schemas.UserResponse)
 def read_users_me(current_user: models.User = Depends(get_current_user)):
     return current_user
+
+@router.put("/me", response_model=schemas.UserResponse)
+def update_user_me(
+    user_data: schemas.UserUpdate, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_user)
+):
+    update_data = user_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(current_user, key, value)
+    
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
+@router.get("/{user_id}", response_model=schemas.UserPublicResponse)
+def read_user_public(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    # Aplica lógica de visibilidade (apenas retorna None para campos privados na Serialização Pública)
+    public_user = schemas.UserPublicResponse.model_validate(user)
+    
+    if not user.show_location:
+        public_user.location_city = None
+        public_user.location_state = None
+        public_user.location_country = None
+        
+    if not user.show_graduation:
+        public_user.graduation_level = None
+        
+    if not user.show_workplace:
+        public_user.workplace = None
+        
+    if not user.show_socials:
+        public_user.instagram_link = None
+        public_user.email_link = None
+        public_user.custom_link = None
+        
+    return public_user
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_me(
+    deletion_data: schemas.UserDelete, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_user)
+):
+    if not verify_password(deletion_data.password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Senha incorreta. A conta não foi deletada.",
+        )
+    
+    db.delete(current_user)
+    db.commit()
+    return None

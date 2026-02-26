@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         }
 
         // Repassar para o FastAPI
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/me`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

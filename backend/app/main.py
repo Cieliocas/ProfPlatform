@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine
 from app import models
-from app.routes import auth, experiences, uespi_books
+from app.routes import auth, experiences, uespi_books, upload
 
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
@@ -27,6 +27,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(experiences.router, prefix="/api/v1/experiences", tags=["experiences"])
 app.include_router(uespi_books.router, prefix="/api/v1/uespi-books", tags=["uespi-books"])
+app.include_router(upload.router, prefix="/api/v1/upload", tags=["upload"])
 
 @app.get("/", tags=["Health Check"])
 def read_root():

@@ -11,6 +11,11 @@ import {
   Calendar,
   GraduationCap,
   MessageSquare,
+  FileType,
+  FileText,
+  FileLineChart,
+  Image as ImageIcon,
+  Link2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +23,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import type { Experience } from "@/lib/mock-data"
+import { DownloadPreviewDialog } from "@/components/experience/download-preview-dialog"
+
 
 function getInitials(name: string) {
   return name
@@ -30,7 +36,7 @@ function getInitials(name: string) {
 }
 
 interface ExperienceDetailProps {
-  experience: Experience
+  experience: any
 }
 
 export function ExperienceDetail({ experience }: ExperienceDetailProps) {
@@ -53,7 +59,7 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          {experience.tags.map((tag) => (
+          {experience.tags.map((tag: string) => (
             <Badge
               key={tag}
               variant="secondary"
@@ -85,7 +91,7 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
             <div className="flex items-center gap-3 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5" />
-                {new Date(experience.createdAt).toLocaleDateString("pt-BR", {
+                {new Date(experience.created_at).toLocaleDateString("pt-BR", {
                   day: "numeric",
                   month: "long",
                   year: "numeric",
@@ -145,6 +151,44 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
             <div className="whitespace-pre-wrap leading-relaxed text-muted-foreground">
               {experience.content}
             </div>
+
+            {/* Attachments Section */}
+            {experience.attachments && experience.attachments.length > 0 && (
+              <div className="mt-6 pt-4 border-t border-border">
+                <div className="mb-3 flex items-center gap-2 text-navy">
+                  <span className="text-sm font-semibold">Anexos e Materiais</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {experience.attachments.map((att: any, idx: number) => {
+                    const renderIcon = (type: string) => {
+                      switch (type) {
+                        case "pdf": return <FileType className="h-4 w-4 text-destructive" />
+                        case "doc":
+                        case "docx": return <FileText className="h-4 w-4 text-blue-500" />
+                        case "xls":
+                        case "xlsx": return <FileLineChart className="h-4 w-4 text-green-600" />
+                        case "image":
+                        case "png":
+                        case "jpg":
+                        case "jpeg":
+                        case "webp": return <ImageIcon className="h-4 w-4 text-purple-500" />
+                        case "link": return <Link2 className="h-4 w-4 text-navy" />
+                        default: return <FileText className="h-4 w-4 text-muted-foreground" />
+                      }
+                    }
+
+                    return (
+                      <DownloadPreviewDialog key={idx} attachment={att}>
+                        {renderIcon(att.file_type)}
+                        <span className="truncate max-w-[150px] sm:max-w-[200px]">
+                          {att.file_type === 'link' ? new URL(att.file_name).hostname : att.file_name}
+                        </span>
+                      </DownloadPreviewDialog>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -152,71 +196,13 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
         <div>
           <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-foreground">
             <MessageSquare className="h-5 w-5 text-navy" />
-            Comentarios ({experience.commentsCount})
+            Comentarios
           </h2>
           <Card className="border-border bg-card">
             <CardContent className="p-6">
-              <Textarea
-                placeholder="Compartilhe sua opiniao ou duvida sobre essa experiencia..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                className="min-h-24 resize-none border-border bg-background"
-              />
-              <div className="mt-3 flex justify-end">
-                <Button
-                  size="sm"
-                  className="bg-navy text-warm-white hover:bg-navy/90"
-                  disabled={!comment.trim()}
-                >
-                  Comentar
-                </Button>
-              </div>
-
-              <Separator className="my-6" />
-
-              {/* Sample comments */}
-              <div className="space-y-6">
-                <div className="flex gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-mustard/10 text-xs font-semibold text-navy">
-                      PM
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-foreground">
-                        Patricia Martins
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        ha 3 dias
-                      </span>
-                    </div>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      Adorei essa pratica! Vou adaptar para minha turma de 6o ano. Voce acha que funciona bem com turmas maiores, de 35 alunos?
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-moss/10 text-xs font-semibold text-moss">
-                      RL
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-foreground">
-                        Rafael Lima
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        ha 5 dias
-                      </span>
-                    </div>
-                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                      Apliquei semana passada e os resultados foram otimos. Os alunos ficaram muito engajados. Obrigado por compartilhar!
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <p className="text-center text-muted-foreground py-8">
+                A sessao de comentarios estara disponivel em breve.
+              </p>
             </CardContent>
           </Card>
         </div>

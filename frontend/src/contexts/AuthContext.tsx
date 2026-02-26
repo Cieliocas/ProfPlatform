@@ -26,8 +26,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUser(userData);
         } catch (error) {
             console.error('Failed to authenticate user', error);
+            // Se houve erro na autênticação (ex: token inválido/expirado que o middleware deixou passar),
+            // O cookie preso no navegador deve ser purgado silenciosamente, permitindo acesso ao /login
+            await authService.logout().catch(() => { });
             setUser(null);
-            // No need to call logout here dynamically to prevent infinite loops, nextjs middleware will handle redirection
         } finally {
             setIsLoading(false);
         }

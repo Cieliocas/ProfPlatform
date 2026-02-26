@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { BookOpen, Menu, X, User, LogIn } from "lucide-react"
+import { BookOpen, Menu, X, User, LogIn, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 
 const navLinks = [
@@ -14,6 +15,13 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const { user, logout } = useAuth()
+
+  const availableLinks = navLinks.filter(link => {
+    // Esconde links protegidos se não estiver logado
+    if (!user) return false; // Dashboard "Explorar", Compartilhar e Perfil são privados 
+    return true;
+  })
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
@@ -28,7 +36,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Menu principal">
-          {navLinks.map((link) => (
+          {availableLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -40,17 +48,29 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/login">
-              <LogIn className="mr-2 h-4 w-4" />
-              Entrar
-            </Link>
-          </Button>
-          <Button size="sm" className="bg-mustard text-navy hover:bg-mustard/90 font-semibold" asChild>
-            <Link href="/cadastro">
-              Criar Conta
-            </Link>
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-semibold text-foreground/80">Olá, {user.name.split(' ')[0]}</span>
+              <Button variant="ghost" size="sm" onClick={logout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </Button>
+            </div>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href="/login">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Entrar
+                </Link>
+              </Button>
+              <Button size="sm" className="bg-mustard text-navy hover:bg-mustard/90 font-semibold" asChild>
+                <Link href="/cadastro">
+                  Criar Conta
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -71,7 +91,7 @@ export function Navbar() {
                 </span>
               </Link>
               <nav className="flex flex-col gap-1" aria-label="Menu mobile">
-                {navLinks.map((link) => (
+                {availableLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
@@ -83,17 +103,31 @@ export function Navbar() {
                 ))}
               </nav>
               <div className="flex flex-col gap-2 border-t border-border pt-4">
-                <Button variant="outline" asChild>
-                  <Link href="/login" onClick={() => setOpen(false)}>
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Entrar
-                  </Link>
-                </Button>
-                <Button className="bg-mustard text-navy hover:bg-mustard/90 font-semibold" asChild>
-                  <Link href="/cadastro" onClick={() => setOpen(false)}>
-                    Criar Conta
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <span className="px-4 py-2 text-sm font-medium text-foreground">
+                      Conectado como: {user.name}
+                    </span>
+                    <Button variant="outline" onClick={() => { logout(); setOpen(false); }}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sair
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" asChild>
+                      <Link href="/login" onClick={() => setOpen(false)}>
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Entrar
+                      </Link>
+                    </Button>
+                    <Button className="bg-mustard text-navy hover:bg-mustard/90 font-semibold" asChild>
+                      <Link href="/cadastro" onClick={() => setOpen(false)}>
+                        Criar Conta
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </SheetContent>

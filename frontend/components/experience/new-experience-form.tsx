@@ -17,6 +17,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { allTags, classifications, disciplines } from "@/lib/mock-data"
+import { experienceService } from "@/src/services/experienceService"
+import { AttachmentUploader } from "./attachment-uploader"
+import { AttachmentResponse } from "@/src/services/uploadService"
+import { toast } from "sonner"
+import { Loader2 } from "lucide-react"
 
 export function NewExperienceForm() {
   const [title, setTitle] = useState("")
@@ -25,6 +30,7 @@ export function NewExperienceForm() {
   const [discipline, setDiscipline] = useState("")
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
+  const [attachments, setAttachments] = useState<AttachmentResponse[]>([])
   const [submitted, setSubmitted] = useState(false)
 
   function handleTagToggle(tag: string) {
@@ -41,9 +47,28 @@ export function NewExperienceForm() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setSubmitted(true)
+    setIsSubmitting(true)
+    try {
+      await experienceService.createExperience({
+        title,
+        content,
+        classification,
+        discipline,
+        tags: selectedTags,
+        attachments: attachments,
+      })
+      setSubmitted(true)
+      toast.success("Experiência criada com sucesso!")
+    } catch (error) {
+      console.error(error)
+      toast.error("Erro ao publicar a experiência. Verifique se está logado e atende os requisitos mínimos.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {
@@ -70,6 +95,14 @@ export function NewExperienceForm() {
       </div>
     )
   }
+
+  const isInvalidToSubmit =
+    !title ||
+    !content ||
+    !classification ||
+    !discipline ||
+    (classification !== "Informação" && attachments.length === 0) ||
+    isSubmitting
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8 lg:px-8">
@@ -181,6 +214,25 @@ export function NewExperienceForm() {
           </CardContent>
         </Card>
 
+        {/* Attachments Upload */}
+        <Card className="border-border bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base text-navy">
+              Anexos da Publicação
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <p className="text-xs text-muted-foreground mb-2">
+                {classification === 'Informação'
+                  ? "Anexos e Links Opcionais (Seu post de tipo Informação pode ser publicado sem fotos)."
+                  : "Obrigatório adicionar pelo menos 1 Arquivo ou Link de embasamento."}
+              </p>
+              <AttachmentUploader onAttachmentsChange={setAttachments} />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Tags */}
         <Card className="border-border bg-card">
           <CardHeader className="pb-4">
@@ -199,8 +251,8 @@ export function NewExperienceForm() {
                     type="button"
                     onClick={() => handleTagToggle(tag)}
                     className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${isSelected
-                        ? "bg-navy text-warm-white"
-                        : "bg-secondary text-secondary-foreground hover:bg-border"
+                      ? "bg-navy text-warm-white"
+                      : "bg-secondary text-secondary-foreground hover:bg-border"
                       }`}
                   >
                     {tag}
@@ -262,10 +314,15 @@ export function NewExperienceForm() {
           <Button
             type="submit"
             className="bg-mustard text-navy hover:bg-mustard/90 font-semibold"
-            disabled={!title || !content || !classification || !discipline}
+            disabled={isInvalidToSubmit}
+            title={isInvalidToSubmit ? "Preencha todos os campos obrigatórios e envie um anexo válido." : "Publicar"}
           >
-            <Send className="mr-2 h-4 w-4" />
-            Publicar Experiencia
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="mr-2 h-4 w-4" />
+            )}
+            {isSubmitting ? "Publicando..." : "Publicar Experiencia"}
           </Button>
         </div>
       </form>

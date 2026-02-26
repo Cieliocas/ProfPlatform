@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-async function handler(request: NextRequest, { params }: { params: { path: string[] } }) {
+async function handler(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+    const params = await context.params;
     const path = params.path.join('/');
     // Check if the URL contains query parameters
     const url = new URL(request.url);
@@ -26,17 +27,26 @@ async function handler(request: NextRequest, { params }: { params: { path: strin
         };
 
         if (request.method !== 'GET' && request.method !== 'HEAD') {
-            fetchOptions.body = await request.text();
+            fetchOptions.body = request.body;
+            // @ts-ignore - Exigência do NodeJS/NextJS pra fluxos de leitura contínuos
+            fetchOptions.duplex = 'half';
         }
 
         const response = await fetch(backendUrl, fetchOptions);
 
-        const responseBody = await response.text();
         const responseHeaders = new Headers(response.headers);
+
+        if (response.status === 204) {
+            return new NextResponse(null, {
+                status: 204,
+                headers: responseHeaders,
+            });
+        }
+
         // Não enviar encodings comprimidos pro browser pois o next.js pode re-comprimir e corromper
         responseHeaders.delete('content-encoding');
 
-        return new NextResponse(responseBody, {
+        return new NextResponse(response.body, {
             status: response.status,
             headers: responseHeaders,
         });

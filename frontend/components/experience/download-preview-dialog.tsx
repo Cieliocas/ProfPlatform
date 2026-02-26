@@ -15,11 +15,16 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
     const isImage = ["png", "jpg", "jpeg", "webp", "gif", "image"].includes(attachment.file_type)
     const isLink = attachment.file_type === "link"
 
+    // Se a url veio como path relativo interno, repriorizamos pro túnel Next.js evitar HTTP 404
+    const realUrl = (!isLink && attachment.file_url.startsWith("/api/v1/"))
+        ? `/api/proxy${attachment.file_url}`
+        : attachment.file_url
+
     // Para Links externos, apenas redirecionamos. Não há 'Preview' de HTML solto.
     if (isLink) {
         return (
             <a
-                href={attachment.file_url}
+                href={realUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-sm bg-secondary/50 px-2.5 py-1.5 text-xs font-medium text-secondary-foreground hover:bg-secondary transition-colors border max-w-full cursor-pointer"
@@ -33,7 +38,7 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
     const handleDownload = () => {
         // Tenta forçar o download direto via tag 'a' oculta e atributo download
         const link = document.createElement("a")
-        link.href = attachment.file_url
+        link.href = realUrl
         link.download = attachment.file_name
         link.target = "_blank"
         document.body.appendChild(link)
@@ -63,23 +68,18 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
                 </button>
             </DialogTrigger>
 
-            <DialogContent className={`${isImage ? "max-w-4xl p-1 bg-transparent border-0 shadow-none" : "sm:max-w-md"} [&>button]:text-white`}>
+            <DialogContent className={`${isImage ? "max-w-4xl p-2 bg-transparent border-0 shadow-none outline-none" : "sm:max-w-md"} [&>button]:text-white`}>
                 {isImage ? (
-                    <div className="relative group w-full h-full flex flex-col items-center justify-center">
+                    <div className="flex flex-col items-center justify-center gap-4 w-full h-full">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                            src={attachment.file_url}
+                            src={realUrl}
                             alt={attachment.file_name}
-                            className="max-h-[85vh] object-contain rounded-md"
+                            className="max-h-[75vh] w-auto object-contain rounded-md"
                         />
-
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-md pointer-events-none">
-                            {/* Overlay Area for actions via Button */}
-                        </div>
-
                         <Button
                             onClick={handleDownload}
-                            className="absolute bottom-4 right-4 bg-navy hover:bg-navy/90 text-white shadow-lg z-50 pointer-events-auto"
+                            className="bg-navy hover:bg-navy/90 text-white shadow-lg z-50 px-6 py-5"
                         >
                             <Download className="h-4 w-4 mr-2" />
                             Baixar Imagem

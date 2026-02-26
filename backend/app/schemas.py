@@ -6,6 +6,7 @@ from datetime import datetime
 class UserBase(BaseModel):
     name: str
     email: EmailStr
+    is_verified: bool = False
     bio: Optional[str] = None
     
     location_city: Optional[str] = None
@@ -52,6 +53,7 @@ class UserUpdate(BaseModel):
 class UserPublicResponse(BaseModel):
     id: int
     name: str
+    is_verified: bool = False
     bio: Optional[str] = None
     created_at: datetime
     
@@ -83,6 +85,13 @@ class Token(BaseModel):
     
 class TokenData(BaseModel):
     id: Optional[int] = None
+
+class ForgotPassword(BaseModel):
+    email: EmailStr
+
+class ResetPassword(BaseModel):
+    token: str
+    new_password: str
 
 # --- Attachment Schemas ---
 class AttachmentBase(BaseModel):

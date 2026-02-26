@@ -29,6 +29,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/profplatform
       - JWT_SECRET=supersecretkey_for_dev_only_change_in_prod
+      - RESEND_API_KEY=re_GxzWMnPs_i2MrFk2ngiMqCZVr22Z244c2
     depends_on:
       db:
         condition: service_healthy

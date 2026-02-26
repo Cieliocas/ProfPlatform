@@ -98,5 +98,40 @@ export const authService = {
             throw new Error("Usuário não encontrado");
         }
         return await response.json();
+    },
+
+    async confirmEmail(token: string): Promise<{ message: string }> {
+        const response = await fetch(`/api/proxy/api/v1/auth/confirm-email?token=${token}`);
+        if (!response.ok) {
+            const data = await response.json();
+            throw { response: { data } };
+        }
+        return await response.json();
+    },
+
+    async forgotPassword(email: string): Promise<{ message: string }> {
+        const response = await fetch('/api/proxy/api/v1/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            throw { response: { data } };
+        }
+        return await response.json();
+    },
+
+    async resetPassword(token: string, new_password: string): Promise<{ message: string }> {
+        const response = await fetch('/api/proxy/api/v1/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, new_password }),
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            throw { response: { data } };
+        }
+        return await response.json();
     }
 };

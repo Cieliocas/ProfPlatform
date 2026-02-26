@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
@@ -8,6 +8,7 @@ import os
 
 from app import models, schemas
 from app.database import get_db
+from app.utils.email_service import send_verification_email, send_password_reset_email
 
 router = APIRouter()
 
@@ -35,6 +36,21 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def create_email_token(data: dict):
+    to_encode = data.copy()
+    # Expira em 2 horas
+    expire = datetime.utcnow() + timedelta(hours=2)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def verify_email_token(token: str) -> dict | None:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        return None
+
 # Dependency for current user
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
@@ -56,7 +72,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 @router.post("/register", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def register(user: schemas.UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -66,12 +82,18 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
         name=user.name, 
         email=user.email, 
         password_hash=hashed_password,
+        is_verified=False,
         bio=user.bio
     )
     
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    
+    # Gerar token e enviar e-mail de verificação em background
+    token = create_email_token(data={"sub": new_user.email, "type": "verification"})
+    background_tasks.add_task(send_verification_email, new_user.email, new_user.name, token)
+    
     return new_user
 
 @router.post("/login", response_model=schemas.Token)
@@ -80,9 +102,16 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="E-mail ou senha incorretos",
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Conta nao verificada. Verifique seu e-mail (ou consulte o Console/Terminal)."
+        )
+        
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": str(user.id)}, expires_delta=access_token_expires
@@ -106,6 +135,68 @@ def update_user_me(
     db.commit()
     db.refresh(current_user)
     return current_user
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_me(
+    deletion_data: schemas.UserDelete, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(get_current_user)
+):
+    if not verify_password(deletion_data.password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Senha incorreta. A conta não foi deletada.",
+        )
+    
+    db.delete(current_user)
+    db.commit()
+    return None
+
+@router.get("/confirm-email")
+def confirm_email(token: str, db: Session = Depends(get_db)):
+    payload = verify_email_token(token)
+    if not isinstance(payload, dict) or payload.get("type") != "verification":
+        raise HTTPException(status_code=400, detail="Token invalido ou expirado.")
+    
+    email = payload.get("sub")
+    user = db.query(models.User).filter(models.User.email == email).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario nao encontrado.")
+    
+    if user.is_verified:
+        return {"message": "Email ja verificado anteriormente."}
+        
+    user.is_verified = True
+    db.commit()
+    return {"message": "Email confirmado com sucesso!"}
+
+@router.post("/forgot-password")
+def forgot_password(req: schemas.ForgotPassword, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == req.email).first()
+    if user:
+        token = create_email_token(data={"sub": user.email, "type": "reset_password"})
+        background_tasks.add_task(send_password_reset_email, user.email, token)
+    
+    # Retorna sucesso mesmo se não existir para evitar vazamento de dados de quem tem conta
+    return {"message": "Se sua conta existir, as instrucoes foram enviadas para o email."}
+
+@router.post("/reset-password")
+def reset_password(req: schemas.ResetPassword, db: Session = Depends(get_db)):
+    payload = verify_email_token(req.token)
+    if not isinstance(payload, dict) or payload.get("type") != "reset_password":
+        raise HTTPException(status_code=400, detail="Token invalido ou expirado.")
+        
+    email = payload.get("sub")
+    user = db.query(models.User).filter(models.User.email == email).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario nao encontrado.")
+        
+    hashed_password = get_password_hash(req.new_password)
+    user.password_hash = hashed_password
+    db.commit()
+    return {"message": "Senha modificada com sucesso."}
 
 @router.get("/{user_id}", response_model=schemas.UserPublicResponse)
 def read_user_public(user_id: int, db: Session = Depends(get_db)):
@@ -133,19 +224,3 @@ def read_user_public(user_id: int, db: Session = Depends(get_db)):
         public_user.custom_link = None
         
     return public_user
-
-@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user_me(
-    deletion_data: schemas.UserDelete, 
-    db: Session = Depends(get_db), 
-    current_user: models.User = Depends(get_current_user)
-):
-    if not verify_password(deletion_data.password, current_user.password_hash):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Senha incorreta. A conta não foi deletada.",
-        )
-    
-    db.delete(current_user)
-    db.commit()
-    return None

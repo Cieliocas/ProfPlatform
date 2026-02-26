@@ -24,8 +24,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             const userData = await authService.getCurrentUser();
             setUser(userData);
-        } catch (error) {
-            console.error('Failed to authenticate user', error);
+        } catch (error: any) {
+            if (error?.message !== "Não autenticado") {
+                console.error('Failed to authenticate user', error);
+            }
             // Se houve erro na autênticação (ex: token inválido/expirado que o middleware deixou passar),
             // O cookie preso no navegador deve ser purgado silenciosamente, permitindo acesso ao /login
             await authService.logout().catch(() => { });

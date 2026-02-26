@@ -9,3 +9,4 @@ pydantic==2.6.4
 pydantic[email]==2.6.4
 pydantic-settings==2.2.1
 bcrypt==3.2.2
+resend==2.2.0

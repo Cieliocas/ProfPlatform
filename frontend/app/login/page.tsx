@@ -115,7 +115,7 @@ export default function LoginPage() {
                     Senha
                   </Label>
                   <Link
-                    href="#"
+                    href="/esqueci-senha"
                     className="text-xs text-moss hover:text-moss/80 transition-colors"
                   >
                     Esqueceu a senha?

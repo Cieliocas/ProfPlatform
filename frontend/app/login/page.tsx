@@ -2,7 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { BookOpen, Mail, Lock, Eye, EyeOff } from "lucide-react"
+import { authService } from "../../src/services/authService"
+import { useAuth } from "../../src/contexts/AuthContext"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,7 +14,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
 export default function LoginPage() {
+  const router = useRouter()
+  const { checkAuth } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -71,9 +78,22 @@ export default function LoginPage() {
             {/* Email form */}
             <form
               className="flex flex-col gap-4"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                window.location.href = "/dashboard"
+                setIsLoading(true)
+                try {
+                  await authService.login({ email, password })
+                  await checkAuth()
+                  toast.success("Login realizado com sucesso!")
+                  router.push("/dashboard")
+                } catch (error: any) {
+                  toast.error(
+                    error.response?.data?.detail ||
+                    "Erro ao fazer login. Verifique suas credenciais."
+                  )
+                } finally {
+                  setIsLoading(false)
+                }
               }}
             >
               <div className="flex flex-col gap-2">
@@ -132,9 +152,10 @@ export default function LoginPage() {
               </div>
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-navy text-warm-white hover:bg-navy/90 font-semibold"
               >
-                Entrar
+                {isLoading ? "Entrando..." : "Entrar"}
               </Button>
             </form>
 

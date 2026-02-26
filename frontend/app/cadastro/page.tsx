@@ -2,7 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { BookOpen, Mail, Lock, Eye, EyeOff, User } from "lucide-react"
+import { authService } from "../../src/services/authService"
+import { useAuth } from "../../src/contexts/AuthContext"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,6 +14,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 
 export default function CadastroPage() {
+  const router = useRouter()
+  const { checkAuth } = useAuth()
+  const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
@@ -72,9 +79,23 @@ export default function CadastroPage() {
             {/* Registration form */}
             <form
               className="flex flex-col gap-4"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault()
-                window.location.href = "/dashboard"
+                setIsLoading(true)
+                try {
+                  await authService.register({ name, email, password })
+                  toast.success("Conta criada! Fazendo login...")
+                  await authService.login({ email, password })
+                  await checkAuth()
+                  router.push("/dashboard")
+                } catch (error: any) {
+                  toast.error(
+                    error.response?.data?.detail ||
+                    "Ocorreu um erro ao criar a conta. Tente novamente."
+                  )
+                } finally {
+                  setIsLoading(false)
+                }
               }}
             >
               <div className="flex flex-col gap-2">
@@ -142,9 +163,10 @@ export default function CadastroPage() {
               </div>
               <Button
                 type="submit"
+                disabled={isLoading}
                 className="w-full bg-mustard text-navy hover:bg-mustard/90 font-semibold"
               >
-                Criar Conta
+                {isLoading ? "Criando Conta..." : "Criar Conta"}
               </Button>
             </form>
 

@@ -1,0 +1,34 @@
+import { NextResponse } from 'next/server';
+
+export async function GET(request: Request) {
+    try {
+        // Extrair token do cookie
+        const token = request.headers.get('cookie')
+            ?.split('; ')
+            .find(row => row.startsWith('token='))
+            ?.split('=')[1];
+
+        if (!token) {
+            return NextResponse.json({ detail: 'No auth token found' }, { status: 401 });
+        }
+
+        // Repassar para o FastAPI
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/auth/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            return NextResponse.json(data, { status: response.status });
+        }
+
+        return NextResponse.json(data, { status: 200 });
+    } catch (error) {
+        console.error('Me Route Error:', error);
+        return NextResponse.json({ detail: 'Internal Server Error' }, { status: 500 });
+    }
+}

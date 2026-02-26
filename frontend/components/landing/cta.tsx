@@ -32,7 +32,7 @@ export function CTA() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-base"
+                className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary text-base"
                 asChild
               >
                 <Link href="/dashboard">Ver Experiencias</Link>

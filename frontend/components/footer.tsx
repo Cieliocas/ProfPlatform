@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { BookOpen } from "lucide-react"
 
 export function Footer() {
@@ -8,12 +9,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-3">
           <div className="flex flex-col gap-4">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-mustard">
-                <BookOpen className="h-5 w-5 text-navy" />
-              </div>
-              <span className="text-xl font-bold tracking-tight">
-                Vivencia
-              </span>
+              <Image src="/logo-full.png" alt="Bioativa" width={160} height={50} className="brightness-0 invert object-contain" />
             </Link>
             <p className="text-sm leading-relaxed text-primary-foreground/70">
               Uma plataforma colaborativa para professores compartilharem e
@@ -58,7 +54,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-primary-foreground/10 pt-6">
           <p className="text-center text-xs text-primary-foreground/50">
-            Vivencia &mdash; Projeto de Mestrado. Todos os direitos reservados.
+            Bioativa &mdash; Projeto de Mestrado. Todos os direitos reservados.
           </p>
         </div>
       </div>

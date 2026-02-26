@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { BookOpen, Mail, Lock, Eye, EyeOff, User } from "lucide-react"
 import { authService } from "../../src/services/authService"
@@ -27,12 +28,7 @@ export default function CadastroPage() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link href="/" className="mb-8 flex items-center justify-center gap-2.5">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <BookOpen className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-2xl font-bold tracking-tight text-foreground">
-            Vivencia
-          </span>
+          <Image src="/logo-full.png" alt="Bioativa" width={180} height={60} priority className="object-contain" />
         </Link>
 
         <Card className="border-border bg-card">

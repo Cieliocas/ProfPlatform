@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
-import { BookOpen, Menu, X, User, LogIn, LogOut } from "lucide-react"
+import { Menu, X, User, LogIn, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -27,12 +28,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <BookOpen className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            Vivencia
-          </span>
+          <Image src="/logo-full.png" alt="Bioativa" width={130} height={40} priority className="object-contain" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Menu principal">
@@ -82,13 +78,8 @@ export function Navbar() {
           <SheetContent side="right" className="w-72">
             <SheetTitle className="sr-only">Menu de navegacao</SheetTitle>
             <div className="flex flex-col gap-6 pt-8">
-              <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-                  <BookOpen className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold tracking-tight text-foreground">
-                  Vivencia
-                </span>
+              <Link href="/" className="flex items-center gap-2.5 pl-1" onClick={() => setOpen(false)}>
+                <Image src="/logo-full.png" alt="Bioativa" width={130} height={40} priority className="object-contain" />
               </Link>
               <nav className="flex flex-col gap-1" aria-label="Menu mobile">
                 {availableLinks.map((link) => (

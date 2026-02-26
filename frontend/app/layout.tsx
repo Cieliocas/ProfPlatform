@@ -8,7 +8,7 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: 'Vivencia - Compartilhe Experiencias Pedagogicas',
+  title: 'Bioativa - Compartilhe Experiencias Pedagogicas',
   description: 'Plataforma colaborativa para professores compartilharem e descobrirem praticas pedagogicas inovadoras.',
 }
 

@@ -80,8 +80,8 @@ export default function CadastroPage() {
                 setIsLoading(true)
                 try {
                   await authService.register({ name, email, password })
-                  toast.success("Conta criada! Verifique sua caixa de e-mail para validar seu acesso.", {
-                    duration: 8000
+                  toast.success("Conta criada com sucesso! Você já pode fazer login.", {
+                    duration: 5000
                   })
                   router.push("/login")
                 } catch (error: any) {

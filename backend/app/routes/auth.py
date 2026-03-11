@@ -171,6 +171,21 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Email confirmado com sucesso!"}
 
+@router.post("/resend-verification")
+def resend_verification(req: schemas.ResendVerification, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == req.email).first()
+    
+    if not user:
+        return {"message": "Se sua conta existir e não estiver verificada, um novo e-mail foi enviado."}
+        
+    if user.is_verified:
+        return {"message": "Conta já verificada. Você já pode fazer login."}
+        
+    token = create_email_token(data={"sub": user.email, "type": "verification"})
+    background_tasks.add_task(send_verification_email, user.email, user.name, token)
+    
+    return {"message": "Se sua conta existir e não estiver verificada, um novo e-mail foi enviado."}
+
 @router.post("/forgot-password")
 def forgot_password(req: schemas.ForgotPassword, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == req.email).first()

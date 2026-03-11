@@ -89,6 +89,9 @@ class TokenData(BaseModel):
 class ForgotPassword(BaseModel):
     email: EmailStr
 
+class ResendVerification(BaseModel):
+    email: EmailStr
+
 class ResetPassword(BaseModel):
     token: str
     new_password: str

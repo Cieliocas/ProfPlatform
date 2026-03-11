@@ -109,6 +109,19 @@ export const authService = {
         return await response.json();
     },
 
+    async resendVerification(email: string): Promise<{ message: string }> {
+        const response = await fetch('/api/proxy/api/v1/auth/resend-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+        });
+        if (!response.ok) {
+            const data = await response.json();
+            throw { response: { data } };
+        }
+        return await response.json();
+    },
+
     async forgotPassword(email: string): Promise<{ message: string }> {
         const response = await fetch('/api/proxy/api/v1/auth/forgot-password', {
             method: 'POST',

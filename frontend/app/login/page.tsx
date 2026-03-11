@@ -22,6 +22,16 @@ export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  const handleResendEmail = async (userEmail: string) => {
+    try {
+      toast.loading("Enviando novo e-mail...", { id: "resend-email" })
+      await authService.resendVerification(userEmail)
+      toast.success("E-mail reenviado! Verifique sua caixa de entrada (e Spam).", { id: "resend-email" })
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Erro ao tentar reenviar e-mail.", { id: "resend-email" })
+    }
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
       <div className="w-full max-w-md">
@@ -83,10 +93,19 @@ export default function LoginPage() {
                   toast.success("Login realizado com sucesso!")
                   router.push("/dashboard")
                 } catch (error: any) {
-                  toast.error(
-                    error.response?.data?.detail ||
-                    "Erro ao fazer login. Verifique suas credenciais."
-                  )
+                  const detail = error.response?.data?.detail || ""
+                  if (detail.includes("nao verificada") || error.response?.status === 403) {
+                    toast.error("Sua conta ainda não foi verificada.", {
+                      description: "Você precisa confirmar seu e-mail antes de entrar.",
+                      action: {
+                        label: 'Reenviar E-mail',
+                        onClick: () => handleResendEmail(email)
+                      },
+                      duration: 15000,
+                    })
+                  } else {
+                    toast.error(detail || "Erro ao fazer login. Verifique suas credenciais.")
+                  }
                 } finally {
                   setIsLoading(false)
                 }

@@ -23,12 +23,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
 
   const handleResendEmail = async (userEmail: string) => {
+    const tId = toast.loading("Enviando novo e-mail...")
     try {
-      toast.loading("Enviando novo e-mail...", { id: "resend-email" })
       await authService.resendVerification(userEmail)
-      toast.success("E-mail reenviado! Verifique sua caixa de entrada (e Spam).", { id: "resend-email" })
+      toast.success("E-mail reenviado! Verifique sua caixa de entrada (e Spam).", { id: tId, duration: 8000 })
     } catch (error: any) {
-      toast.error(error.response?.data?.detail || "Erro ao tentar reenviar e-mail.", { id: "resend-email" })
+      toast.error(error.response?.data?.detail || "Erro ao tentar reenviar e-mail.", { id: tId })
     }
   }
 

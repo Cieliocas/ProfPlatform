@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker
 
 # Get DB_URL from environment or use default for docker-compose
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@db:5432/profplatform")
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

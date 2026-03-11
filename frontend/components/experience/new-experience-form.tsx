@@ -63,9 +63,10 @@ export function NewExperienceForm() {
       })
       setSubmitted(true)
       toast.success("Experiência criada com sucesso!")
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      toast.error("Erro ao publicar a experiência. Verifique se está logado e atende os requisitos mínimos.")
+      const errDetail = error.response?.data?.detail || error.message || "Erro desconhecido"
+      toast.error(`Falha: ${typeof errDetail === 'string' ? errDetail : JSON.stringify(errDetail)}`)
     } finally {
       setIsSubmitting(false)
     }

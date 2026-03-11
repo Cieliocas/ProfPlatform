@@ -82,7 +82,9 @@ def register(user: schemas.UserCreate, background_tasks: BackgroundTasks, db: Se
         name=user.name, 
         email=user.email, 
         password_hash=hashed_password,
-        is_verified=False,
+        # TODO: VOLTAR PARA FALSE QUANDO FOR LANÇAR PRO MUNDO COM DOMÍNIO COMPRADO
+        # is_verified=False (Modo Apresentação de Mestrado: Liberação Total Ativa)
+        is_verified=True,
         bio=user.bio
     )
     

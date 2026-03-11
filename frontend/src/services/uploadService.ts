@@ -12,8 +12,9 @@ export const uploadService = {
         formData.append("file", file);
 
         try {
-            // O Proxy do Vercel empacotará o Cookie HTTPOnly perfeitamente.
-            const response = await fetch("/api/proxy/api/v1/upload", {
+            // Enviando o arquivo DIRETAMENTE para o Render para desviar das pesadas Limitações de Vercel
+            // (4.5 MB Limit e timeouts). Usando a string hardcoded para o Modo Apresentação:
+            const response = await fetch("https://bioativa-api.onrender.com/api/v1/upload", {
                 method: "POST",
                 // O Fetch entende o FormData nativo do navegador
                 body: formData,

@@ -27,9 +27,10 @@ async function handler(request: NextRequest, context: { params: Promise<{ path: 
         };
 
         if (request.method !== 'GET' && request.method !== 'HEAD') {
-            fetchOptions.body = request.body;
-            // @ts-ignore - Exigência do NodeJS/NextJS pra fluxos de leitura contínuos
-            fetchOptions.duplex = 'half';
+            // Utilizamos buffering total (ArrayBuffer) em vez de Streaming, porque a Vercel 
+            // e os navegadores as vezes corrompem as "Boundaries" em Streams contínuos de imagens.
+            const buffer = await request.arrayBuffer();
+            fetchOptions.body = buffer;
         }
 
         const response = await fetch(backendUrl, fetchOptions);

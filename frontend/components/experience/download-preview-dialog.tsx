@@ -88,7 +88,14 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
                 ) : (
                     <div className="flex flex-col items-center justify-center p-6 text-center">
                         {getIcon()}
-                        <h3 className="text-lg font-semibold mb-2 line-clamp-2">{attachment.file_name}</h3>
+                        <h3 className="text-lg font-semibold mb-2 line-clamp-2">
+                            {attachment.file_type === 'link'
+                                ? (() => {
+                                    try { return new URL(attachment.file_name).hostname }
+                                    catch (e) { return attachment.file_name }
+                                })()
+                                : attachment.file_name}
+                        </h3>
                         <p className="text-sm text-muted-foreground mb-6">
                             Esta é uma mídia de documento. O pre-visualizador visual ainda não suporta extensões de texto interativo no Browser. Deseja realizar o download?
                         </p>

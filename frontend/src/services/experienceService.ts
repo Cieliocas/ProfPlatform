@@ -1,4 +1,4 @@
-import api from '@/lib/api';
+import api from '@/src/lib/api';
 
 export const experienceService = {
     async createExperience(data: any): Promise<any> {

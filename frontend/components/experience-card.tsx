@@ -21,7 +21,7 @@ import {
 import { toast } from "sonner"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
-import type { Experience } from "@/lib/mock-data"
+import type { Experience } from "@/src/lib/mock-data"
 
 import { PublicProfileDialog } from "./profile/public-profile-dialog"
 import { DownloadPreviewDialog } from "./experience/download-preview-dialog"

@@ -23,7 +23,7 @@ import {
 import { toast } from "sonner"
 import { authService } from "@/src/services/authService"
 import { ExperienceCard } from "@/components/experience-card"
-import type { Author, Experience } from "@/lib/mock-data"
+import type { Author, Experience } from "@/src/lib/mock-data"
 import { EditProfileDialog } from "./edit-profile-dialog"
 import { useAuth } from "@/src/contexts/AuthContext"
 

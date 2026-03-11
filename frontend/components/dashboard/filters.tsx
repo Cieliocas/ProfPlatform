@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { allTags, classifications, disciplines } from "@/lib/mock-data"
+import { allTags, classifications, disciplines } from "@/src/lib/mock-data"
 
 interface FiltersProps {
   search: string

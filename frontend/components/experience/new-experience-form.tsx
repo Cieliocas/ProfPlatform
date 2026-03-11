@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { allTags, classifications, disciplines } from "@/lib/mock-data"
+import { allTags, classifications, disciplines } from "@/src/lib/mock-data"
 import { experienceService } from "@/src/services/experienceService"
 import { AttachmentUploader } from "./attachment-uploader"
 import { AttachmentResponse } from "@/src/services/uploadService"

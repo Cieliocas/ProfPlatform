@@ -44,8 +44,11 @@ async function handler(request: NextRequest, context: { params: Promise<{ path: 
             });
         }
 
-        // Não enviar encodings comprimidos pro browser pois o next.js pode re-comprimir e corromper
+        // O NodeJS Fetch descompacta GZIP automaticamente, alterando o tamanho do payload real!
+        // Repassar o content-length original do backend (ex: 900 bytes compactados) fará com que o 
+        // Chrome silenciosamente ampute o JSON descompactado (3000 bytes) aos 900 chars (SyntaxError).
         responseHeaders.delete('content-encoding');
+        responseHeaders.delete('content-length');
 
         return new NextResponse(response.body, {
             status: response.status,

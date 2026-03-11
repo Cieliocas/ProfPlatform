@@ -16,9 +16,9 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
     const isLink = attachment.file_type === "link"
 
     // Se a url veio como path relativo interno, repriorizamos pro túnel Next.js evitar HTTP 404
-    const realUrl = (!isLink && attachment.file_url.startsWith("/api/v1/"))
+    const realUrl = (!isLink && attachment?.file_url?.startsWith("/api/v1/"))
         ? `/api/proxy${attachment.file_url}`
-        : attachment.file_url
+        : (attachment?.file_url || "")
 
     // Para Links externos, apenas redirecionamos. Não há 'Preview' de HTML solto.
     if (isLink) {
@@ -46,8 +46,8 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
         document.body.removeChild(link)
     }
 
-    const renderIcon = () => {
-        switch (attachment.file_type) {
+    const getIcon = () => {
+        switch (attachment.file_type?.toLowerCase()) {
             case "pdf": return <FileType className="h-16 w-16 text-destructive mb-4" />
             case "doc":
             case "docx": return <FileText className="h-16 w-16 text-blue-500 mb-4" />
@@ -87,7 +87,7 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
                     </div>
                 ) : (
                     <div className="flex flex-col items-center justify-center p-6 text-center">
-                        {renderIcon()}
+                        {getIcon()}
                         <h3 className="text-lg font-semibold mb-2 line-clamp-2">{attachment.file_name}</h3>
                         <p className="text-sm text-muted-foreground mb-6">
                             Esta é uma mídia de documento. O pre-visualizador visual ainda não suporta extensões de texto interativo no Browser. Deseja realizar o download?

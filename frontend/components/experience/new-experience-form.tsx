@@ -65,8 +65,17 @@ export function NewExperienceForm() {
       toast.success("Experiência criada com sucesso!")
     } catch (error: any) {
       console.error(error)
-      const errDetail = error.response?.data?.detail || error.message || "Erro desconhecido"
-      toast.error(`Falha: ${typeof errDetail === 'string' ? errDetail : JSON.stringify(errDetail)}`)
+      const errorData = error.response?.data?.detail
+      let errMessage = error.message || "Erro desconhecido"
+
+      if (Array.isArray(errorData)) {
+        // Extrai os campos recusados pelo Pydantic Validations
+        errMessage = errorData.map((e: any) => `${e.loc?.join('.')} : ${e.msg}`).join(', ')
+      } else if (typeof errorData === 'string') {
+        errMessage = errorData
+      }
+
+      toast.error(`Falha na API: ${errMessage}`)
     } finally {
       setIsSubmitting(false)
     }

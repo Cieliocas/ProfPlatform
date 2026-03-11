@@ -213,10 +213,12 @@ export function ExperienceCard({ experience }: { experience: any }) {
                 </AlertDialogContent>
               </AlertDialog>
             )}
-            {new Date(experience.created_at || experience.createdAt || new Date()).toLocaleDateString("pt-BR", {
-              day: "numeric",
-              month: "short",
-            })}
+            {experience.created_at || experience.createdAt
+              ? new Date(experience.created_at || experience.createdAt).toLocaleDateString("pt-BR", {
+                day: "numeric",
+                month: "short",
+              })
+              : "Nova Publicação"}
           </span>
         </div>
       </CardContent>

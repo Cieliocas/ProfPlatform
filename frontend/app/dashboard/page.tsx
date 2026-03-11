@@ -41,9 +41,9 @@ export default function DashboardPage() {
     return experiences.filter((exp) => {
       const matchesSearch =
         !search ||
-        exp.title.toLowerCase().includes(search.toLowerCase()) ||
-        exp.content.toLowerCase().includes(search.toLowerCase()) ||
-        exp.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
+        (exp.title?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (exp.content?.toLowerCase() || "").includes(search.toLowerCase()) ||
+        (exp.tags || []).some((t: string) => t.toLowerCase().includes(search.toLowerCase()))
 
       const matchesClassification =
         !selectedClassification ||

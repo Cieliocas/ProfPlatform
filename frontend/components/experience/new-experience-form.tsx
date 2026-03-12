@@ -28,6 +28,12 @@ export function NewExperienceForm() {
   const [content, setContent] = useState("")
   const [classification, setClassification] = useState("")
   const [discipline, setDiscipline] = useState("")
+  const [steps, setSteps] = useState<{ title: string; description: string }[]>([
+    { title: "Problematizacao", description: "Contextualize o tema e a questao central." },
+    { title: "Hipotese", description: "Registre as hipoteses iniciais da turma." },
+    { title: "Coleta de Dados", description: "Planeje e execute a coleta de dados." },
+    { title: "Conclusao", description: "Analise resultados e sintetize aprendizagens." },
+  ])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [tagInput, setTagInput] = useState("")
   const [attachments, setAttachments] = useState<AttachmentResponse[]>([])
@@ -58,11 +64,12 @@ export function NewExperienceForm() {
         content,
         classification,
         discipline,
+        steps,
         tags: selectedTags,
         attachments: attachments,
       })
       setSubmitted(true)
-      toast.success("Experiência criada com sucesso!")
+      toast.success("Sequência didática criada com sucesso!")
     } catch (error: any) {
       console.error(error)
       const errorData = error.response?.data?.detail
@@ -88,10 +95,10 @@ export function NewExperienceForm() {
           <Send className="h-10 w-10 text-moss" />
         </div>
         <h2 className="text-2xl font-bold text-foreground">
-          Experiencia Enviada!
+          Sequência Didática Enviada!
         </h2>
         <p className="mt-3 text-muted-foreground">
-          Sua pratica pedagogica foi compartilhada com sucesso. Outros
+          Sua sequência didática foi compartilhada com sucesso. Outros
           professores ja podem ve-la no feed.
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -99,7 +106,7 @@ export function NewExperienceForm() {
             <Link href="/dashboard">Ver no Feed</Link>
           </Button>
           <Button variant="outline" onClick={() => setSubmitted(false)}>
-            Compartilhar Outra
+          Compartilhar Outra SDI
           </Button>
         </div>
       </div>
@@ -111,6 +118,8 @@ export function NewExperienceForm() {
     !content ||
     !classification ||
     !discipline ||
+    steps.length === 0 ||
+    steps.some((step) => !step.title.trim() || !step.description.trim()) ||
     (classification !== "Informação" && attachments.length === 0) ||
     isSubmitting
 
@@ -126,10 +135,10 @@ export function NewExperienceForm() {
 
       <div className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          Compartilhar Experiencia
+          Compartilhar Sequência Didática
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Descreva sua pratica pedagogica para que outros professores possam se
+          Descreva sua sequência didática para que outros professores possam se
           inspirar e aplicar em suas salas de aula.
         </p>
       </div>
@@ -145,7 +154,7 @@ export function NewExperienceForm() {
           <CardContent className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <Label htmlFor="title" className="text-sm font-medium">
-                Titulo da Experiencia *
+                Titulo da Sequência Didática *
               </Label>
               <Input
                 id="title"
@@ -206,7 +215,7 @@ export function NewExperienceForm() {
           <CardContent className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <Label htmlFor="content" className="text-sm font-medium">
-                Conteudo da Experiencia *
+                Conteudo da Sequência Didática *
               </Label>
               <p className="text-xs text-muted-foreground">
                 Descreva todo o processo, contexto, e materiais necessarios.
@@ -220,6 +229,74 @@ export function NewExperienceForm() {
                 required
                 className="min-h-64 resize-y border-border bg-background"
               />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Steps */}
+        <Card className="border-border bg-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base text-navy">
+              Etapas da Investigacao
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="stepCount" className="text-sm font-medium">
+                Numero de etapas *
+              </Label>
+              <Input
+                id="stepCount"
+                type="number"
+                min={1}
+                max={10}
+                value={steps.length}
+                onChange={(e) => {
+                  const nextCount = Math.max(1, Math.min(10, Number(e.target.value) || 1))
+                  setSteps((prev) => {
+                    const next = [...prev]
+                    if (next.length < nextCount) {
+                      while (next.length < nextCount) next.push({ title: "", description: "" })
+                    } else if (next.length > nextCount) {
+                      next.length = nextCount
+                    }
+                    return next
+                  })
+                }}
+                className="border-border bg-background max-w-[120px]"
+              />
+              <p className="text-xs text-muted-foreground">
+                Cada etapa sera exibida na linha do tempo da SDI.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {steps.map((step, index) => (
+                <div key={`step-${index}`} className="flex flex-col gap-2 rounded-lg border border-border bg-background p-4">
+                  <Label htmlFor={`step-${index}`} className="text-xs font-semibold">
+                    Etapa {index + 1}
+                  </Label>
+                  <Input
+                    id={`step-${index}`}
+                    placeholder={`Nome da etapa ${index + 1}`}
+                    value={step.title}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, title: value } : s)))
+                    }}
+                    className="border-border bg-background"
+                  />
+                  <Textarea
+                    placeholder="Descricao curta da etapa (o que deve acontecer?)"
+                    value={step.description}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, description: value } : s)))
+                    }}
+                    className="min-h-24 border-border bg-background"
+                  />
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -332,7 +409,7 @@ export function NewExperienceForm() {
             ) : (
               <Send className="mr-2 h-4 w-4" />
             )}
-            {isSubmitting ? "Publicando..." : "Publicar Experiencia"}
+            {isSubmitting ? "Publicando..." : "Publicar Sequência Didática"}
           </Button>
         </div>
       </form>

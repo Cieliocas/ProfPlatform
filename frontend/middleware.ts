@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // Mapeamento de rotas protegidas
-const protectedRoutes = ['/dashboard', '/perfil', '/experiencia']
+const protectedRoutes = ['/dashboard', '/perfil', '/experiencia', '/minhas-sdis', '/salvos']
 
 // Mapeamento de rotas de auth (não deve acessar se já estiver logado logicamente, mas opcional redirecionar)
 const authRoutes = ['/login', '/cadastro']

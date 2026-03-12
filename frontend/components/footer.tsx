@@ -12,8 +12,8 @@ export function Footer() {
               <Image src="/logo-full.png" alt="Bioativa" width={160} height={50} className="brightness-0 invert object-contain" />
             </Link>
             <p className="text-sm leading-relaxed text-primary-foreground/70">
-              Uma plataforma colaborativa para professores compartilharem e
-              descobrirem praticas pedagogicas inovadoras.
+              Uma plataforma colaborativa para professores de Biologia
+              compartilharem e descobrirem sequencias didaticas investigativas.
             </p>
           </div>
 
@@ -23,10 +23,10 @@ export function Footer() {
             </h3>
             <nav className="flex flex-col gap-2" aria-label="Links do rodape">
               <Link href="/dashboard" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
-                Explorar Experiencias
+                Explorar SDIs de Biologia
               </Link>
               <Link href="/experiencia/nova" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
-                Compartilhar Pratica
+                Compartilhar SDI
               </Link>
               <Link href="/perfil" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
                 Meu Perfil
@@ -54,7 +54,7 @@ export function Footer() {
 
         <div className="mt-10 border-t border-primary-foreground/10 pt-6">
           <p className="text-center text-xs text-primary-foreground/50">
-            Bioativa &mdash; Projeto de Mestrado. Todos os direitos reservados.
+            Bioativa - Projeto de Mestrado. Todos os direitos reservados.
           </p>
         </div>
       </div>

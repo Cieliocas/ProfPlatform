@@ -12,9 +12,18 @@ export const uploadService = {
         formData.append("file", file);
 
         try {
-            // Enviando o arquivo DIRETAMENTE para o Render para desviar das pesadas Limitações de Vercel
-            // (4.5 MB Limit e timeouts). Usando a string hardcoded para o Modo Apresentação:
-            const response = await fetch("https://bioativa-api.onrender.com/api/v1/upload", {
+            const isLocalhost = typeof window !== "undefined" && (
+                window.location.hostname === "localhost" ||
+                window.location.hostname === "127.0.0.1"
+            );
+
+            const uploadUrl = isLocalhost
+                ? "/api/proxy/api/v1/upload"
+                : "https://bioativa-api.onrender.com/api/v1/upload";
+
+            // Em producao (Vercel), enviar diretamente ao Render evita limites de upload.
+            // Em localhost, usa o proxy do Next para falar com o backend local.
+            const response = await fetch(uploadUrl, {
                 method: "POST",
                 // O Fetch entende o FormData nativo do navegador
                 body: formData,

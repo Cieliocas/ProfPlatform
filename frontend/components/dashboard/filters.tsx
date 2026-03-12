@@ -44,7 +44,7 @@ export function Filters({
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Buscar experiencias..."
+            placeholder="Buscar sequencias didaticas..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="pl-10 bg-card border-border"
@@ -58,6 +58,7 @@ export function Filters({
           <SelectContent>
             <SelectItem value="all">Todas</SelectItem>
             <SelectItem value="Plano de aula simples">Plano de aula simples</SelectItem>
+            <SelectItem value="Sequência didática investigativa">Sequência didática investigativa</SelectItem>
             <SelectItem value="Sequência didática">Sequência didática</SelectItem>
             <SelectItem value="Experiência comum">Experiência comum</SelectItem>
             <SelectItem value="Informação">Informação</SelectItem>
@@ -70,10 +71,8 @@ export function Filters({
             <SelectValue placeholder="Disciplina" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todas as ciencias</SelectItem>
+            <SelectItem value="all">Biologia</SelectItem>
             <SelectItem value="Biologia">Biologia</SelectItem>
-            <SelectItem value="Química">Química</SelectItem>
-            <SelectItem value="Física">Física</SelectItem>
           </SelectContent>
         </Select>
         {hasFilters && (

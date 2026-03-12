@@ -2,11 +2,10 @@
 import { useState } from "react"
 
 import Link from "next/link"
-import { ThumbsUp, Bookmark, MessageCircle, Trash2, FileType, FileText, FileLineChart, Image as ImageIcon, Link2 } from "lucide-react"
+import { ThumbsUp, Bookmark, Trash2, FileType, FileText, FileLineChart, Image as ImageIcon, Link2, Clock } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +20,7 @@ import {
 import { toast } from "sonner"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
-import type { Experience } from "@/src/lib/mock-data"
+import { interconnectOptions } from "@/src/lib/mock-data"
 
 import { PublicProfileDialog } from "./profile/public-profile-dialog"
 import { DownloadPreviewDialog } from "./experience/download-preview-dialog"
@@ -38,23 +37,22 @@ function getInitials(name: string) {
 export function ExperienceCard({ experience }: { experience: any }) {
   const { user } = useAuth()
 
-  // O backend novo retorna author_id, o mock antigo retornava author.id
   const authorId = experience.author_id || experience.author?.id
   const isOwner = user?.id === authorId
   const authorName = experience.author?.name || "Usuário do Sistema"
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [liked, setLiked] = useState(false)
+  const [saved, setSaved] = useState(false)
 
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
       if (typeof experience.id === 'string' || typeof experience.id === 'number') {
-        // Conversão de tipo segura porque o mock usa string e backend vai usar Int
         await experienceService.deleteExperience(Number(experience.id))
       }
-      toast.success("Experiência deletada com sucesso.")
-      // Recarregar a página ou notificar callback no frontend verdadeiro
+      toast.success("Sequência didática deletada com sucesso.")
       window.location.reload()
     } catch (e) {
       toast.error("Erro ao deletar a experiência")
@@ -64,52 +62,100 @@ export function ExperienceCard({ experience }: { experience: any }) {
     }
   }
 
+  // Derived mock properties for the new SDI concept
+  const expTags = (experience.tags || []) as string[]
+  const connectionTag = expTags.find((tag) => interconnectOptions.includes(tag))
+  const displayTags = expTags.filter((tag) => tag !== connectionTag).slice(0, 3)
+
+  // Treat Title as Guiding Question (it is the main focus now)
+  const guidingQuestion = experience.title.endsWith("?") ? experience.title : `${experience.title}?`
+
+  const savedCountBase = experience.savedCount ?? experience.saved_count ?? 0
+  const appliedCountBase = experience.appliedCount ?? experience.applied_count ?? experience.upvotes ?? 0
+  const savedCount = savedCountBase + (saved ? 1 : 0)
+  const appliedCount = appliedCountBase + (liked ? 1 : 0)
+
+  const steps = Array.isArray(experience.steps) && experience.steps.length > 0
+    ? experience.steps
+    : ["Problematizacao", "Hipotese", "Coleta de Dados", "Conclusao"]
+
   return (
-    <Card className="group border-border bg-card transition-all hover:shadow-lg hover:-translate-y-0.5">
-      <CardContent className="flex flex-col gap-4 p-6">
-        {/* Author row */}
-        <div className="flex items-center gap-3">
+    <Card className="group border-border bg-card transition-all hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden">
+      {/* Accent Top Bar */}
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-moss to-mustard" />
+      <CardContent className="flex flex-col p-6 h-full">
+        
+        {/* Top Tags & Author */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex flex-wrap gap-2">
+            <Badge className="bg-moss hover:bg-moss/90 text-white font-bold tracking-wider text-[10px] uppercase">
+              Biologia
+            </Badge>
+            {connectionTag && (
+              <Badge variant="outline" className="text-muted-foreground border-border text-[10px] uppercase font-bold bg-background">
+                + {connectionTag}
+              </Badge>
+            )}
+          </div>
           <PublicProfileDialog authorId={authorId} authorName={authorName}>
-            <div className="flex items-center gap-3 cursor-pointer group/author">
-              <Avatar className="h-10 w-10 border-2 border-moss/20 group-hover/author:border-moss/50 transition-colors">
+            <div className="flex items-center gap-2 cursor-pointer">
+              <Avatar className="h-8 w-8 border-2 border-moss/20 hover:border-moss/50 transition-colors">
                 <AvatarFallback className="bg-moss/10 text-xs font-semibold text-moss">
                   {getInitials(authorName)}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold text-foreground group-hover/author:text-navy transition-colors">
-                  {authorName}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-mustard font-medium">
-                    {experience.classification}
-                  </span>
-                  <span className="text-xs text-muted-foreground">•</span>
-                  <span className="text-xs text-muted-foreground">
-                    {experience.discipline}
-                  </span>
-                </div>
-              </div>
+              <span className="text-xs font-semibold text-muted-foreground">{authorName}</span>
             </div>
           </PublicProfileDialog>
         </div>
 
-        {/* Title and context */}
-        <div>
+        {/* Guiding Question */}
+        <div className="mb-6">
           <Link href={`/experiencia/${experience.id}`}>
-            <h3 className="text-lg font-bold leading-snug text-foreground group-hover:text-navy transition-colors">
-              {experience.title}
+            <h3 className="text-xl md:text-2xl font-bold leading-tight text-navy group-hover:text-moss transition-colors italic">
+              "{guidingQuestion}"
             </h3>
           </Link>
-          <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
+          <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {experience.content}
           </p>
+          {displayTags.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {displayTags.map((tag) => (
+                <Badge key={tag} variant="secondary" className="bg-secondary text-secondary-foreground text-[10px] uppercase font-semibold">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Scientific Stepper */}
+        <div className="mb-8 mt-2 relative px-2">
+          <div className="absolute h-[2px] bg-border w-[calc(100%-1rem)] top-1.5 left-2 z-0"></div>
+          <div className="flex items-start gap-5 overflow-x-auto pb-1 relative z-10">
+            {steps.map((step: any, i: number) => {
+              const stepTitle = typeof step === "string" ? step : step?.title || "Etapa"
+              return (
+                <div key={`step-${i}`} className="flex flex-col items-center gap-2 min-w-[90px]">
+                  <div className={`w-3.5 h-3.5 rounded-full border-2 border-background shadow-sm ${i === 0 ? 'bg-mustard' : 'bg-navy'}`}></div>
+                  <span className={`text-[9px] font-bold uppercase tracking-widest text-center ${i === 0 ? 'text-mustard' : 'text-navy'}`}>
+                    {stepTitle}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
         </div>
 
         {/* Attachments Display */}
         {experience.attachments && experience.attachments.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             {experience.attachments.map((att: any, idx: number) => {
+              const normalized = typeof att === "string"
+                ? { file_name: att, file_type: "link", file_url: att }
+                : att
+
               const renderIcon = (type: string) => {
                 switch (type) {
                   case "pdf": return <FileType className="h-4 w-4 text-destructive" />
@@ -127,10 +173,15 @@ export function ExperienceCard({ experience }: { experience: any }) {
               }
 
               return (
-                <DownloadPreviewDialog key={idx} attachment={att}>
-                  {renderIcon(att.file_type)}
+                <DownloadPreviewDialog key={idx} attachment={normalized}>
+                  {renderIcon(normalized.file_type)}
                   <span className="truncate max-w-[150px] sm:max-w-[200px]">
-                    {att.file_type === 'link' ? new URL(att.file_name).hostname : att.file_name}
+                    {normalized.file_type === 'link'
+                      ? (() => {
+                        try { return new URL(normalized.file_name).hostname }
+                        catch (e) { return normalized.file_name }
+                      })()
+                      : normalized.file_name}
                   </span>
                 </DownloadPreviewDialog>
               )
@@ -138,88 +189,57 @@ export function ExperienceCard({ experience }: { experience: any }) {
           </div>
         )}
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5">
-          {(experience.tags || []).slice(0, 4).map((tag: string) => (
-            <Badge
-              key={tag}
-              variant="secondary"
-              className="bg-secondary text-secondary-foreground text-xs font-medium"
+        {/* Interactions & Metadata Footer */}
+        <div className="flex flex-wrap items-center gap-4 mt-auto pt-4 border-t border-border">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="w-3.5 h-3.5" />
+            <span className="font-semibold">2 - 4 Aulas</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span className="font-mono bg-secondary px-1.5 py-0.5 rounded text-[10px]">EM13CNT102</span>
+          </div>
+          
+          <div className="ml-auto flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSaved((prev) => !prev)}
+              className={`flex items-center gap-1 text-xs ${saved ? "text-moss" : "text-muted-foreground"} hover:text-moss`}
             >
-              {tag}
-            </Badge>
-          ))}
-          {(experience.tags || []).length > 4 && (
-            <Badge variant="secondary" className="bg-secondary text-secondary-foreground text-xs">
-              +{(experience.tags || []).length - 4}
-            </Badge>
-          )}
-        </div>
-
-        {/* Interactions */}
-        <div className="flex items-center gap-4 border-t border-border pt-4">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-mustard"
-            aria-label={`${experience.upvotes || 0} aprovacoes`}
-          >
-            <ThumbsUp className="h-4 w-4" />
-            <span className="font-medium">{experience.upvotes || 0}</span>
-          </button>
-          <button
-            type="button"
-            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-moss"
-            aria-label={`${experience.savedCount || 0} vezes salva`}
-          >
-            <Bookmark className="h-4 w-4" />
-            <span className="font-medium">{experience.savedCount || 0}</span>
-          </button>
-          <Link
-            href={`/experiencia/${experience.id}`}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-navy"
-          >
-            <MessageCircle className="h-4 w-4" />
-            <span className="font-medium">{experience.commentsCount || 0}</span>
-          </Link>
-          <span className="ml-auto flex items-center gap-4 text-xs text-muted-foreground">
+              <Bookmark className="h-3.5 w-3.5" />
+              <span className="font-semibold">{savedCount}</span>
+              <span>salvaram</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setLiked((prev) => !prev)}
+              className={`flex items-center gap-1 text-xs ${liked ? "text-mustard" : "text-muted-foreground"} hover:text-mustard`}
+            >
+              <ThumbsUp className="h-3.5 w-3.5" />
+              <span className="font-semibold">{appliedCount}</span>
+              <span>aplicaram</span>
+            </button>
             {isOwner && (
               <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <AlertDialogTrigger asChild>
-                  <button
-                    type="button"
-                    className="text-destructive hover:text-destructive/80 transition-colors"
-                    aria-label="Deletar publicação"
-                  >
+                  <button type="button" className="text-destructive hover:text-destructive/80 transition-colors">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
-                  <AlertDialogHeader>
+                   <AlertDialogHeader>
                     <AlertDialogTitle>Tem certeza que deseja deletar?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Esta ação removerá sua experiência compartilhada para sempre de nossa plataforma.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
+                    <AlertDialogDescription>Esta ação removerá permanentemente a sua investigação.</AlertDialogDescription>
+                   </AlertDialogHeader>
+                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={(e) => { e.preventDefault(); handleDelete(); }}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      disabled={isDeleting}
-                    >
+                     <AlertDialogAction onClick={(e) => { e.preventDefault(); handleDelete(); }} className="bg-destructive text-destructive-foreground hover:bg-destructive/90" disabled={isDeleting}>
                       {isDeleting ? "Deletando..." : "Sim, deletar"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
+                     </AlertDialogAction>
+                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-            )}
-            {experience.created_at || experience.createdAt
-              ? new Date(experience.created_at || experience.createdAt).toLocaleDateString("pt-BR", {
-                day: "numeric",
-                month: "short",
-              })
-              : "Nova Publicação"}
-          </span>
+             )}
+          </div>
         </div>
       </CardContent>
     </Card>

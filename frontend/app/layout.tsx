@@ -8,8 +8,8 @@ import './globals.css'
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: 'Bioativa - Compartilhe Experiencias Pedagogicas',
-  description: 'Plataforma colaborativa para professores compartilharem e descobrirem praticas pedagogicas inovadoras.',
+  title: 'Bioativa - Sequencias Didaticas Investigativas em Biologia',
+  description: 'Plataforma colaborativa para professores de Biologia compartilharem e descobrirem sequencias didaticas investigativas.',
 }
 
 export const viewport: Viewport = {

@@ -110,12 +110,18 @@ class AttachmentResponse(AttachmentBase):
     class Config:
         from_attributes = True
 
+# --- Steps ---
+class ExperienceStep(BaseModel):
+    title: str
+    description: Optional[str] = None
+
 # --- Experience Schemas ---
 class ExperienceBase(BaseModel):
     title: str
     content: str
     classification: str
     discipline: str
+    steps: List[ExperienceStep] = []
     tags: List[str] = []
 
 class ExperienceCreate(ExperienceBase):

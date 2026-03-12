@@ -9,9 +9,9 @@ import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 
 const navLinks = [
-  { href: "/dashboard", label: "Explorar" },
-  { href: "/experiencia/nova", label: "Compartilhar" },
-  { href: "/perfil", label: "Meu Perfil" },
+  { href: "/minhas-sdis", label: "Minhas SDIs" },
+  { href: "/salvos", label: "Salvos" },
+  { href: "/perfil", label: "Perfil" },
 ]
 
 export function Navbar() {

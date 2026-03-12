@@ -11,16 +11,16 @@ const steps = [
   {
     number: "02",
     icon: PenLine,
-    title: "Compartilhe uma Experiencia",
+    title: "Compartilhe uma SDI",
     description:
-      "Descreva sua pratica pedagogica, o contexto, o passo a passo e os materiais usados. Adicione tags para facilitar a busca.",
+      "Descreva sua sequencia didatica, o contexto, o passo a passo e os materiais usados. Adicione tags para facilitar a busca.",
   },
   {
     number: "03",
     icon: Compass,
     title: "Explore e Aplique",
     description:
-      'Navegue pelo feed, filtre por tema e descubra ideias para sua proxima aula. Se funcionou, clique em "Apliquei e deu certo!".',
+      'Navegue pelo feed, filtre por eixo da Biologia e descubra ideias para sua proxima aula. Se funcionou, clique em "Apliquei e deu certo!".',
   },
 ]
 

@@ -13,18 +13,18 @@ export function Hero() {
         <div className="flex flex-col items-center text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-foreground/20 bg-primary-foreground/5 px-4 py-2 text-sm text-primary-foreground/80">
             <Lightbulb className="h-4 w-4 text-mustard" />
-            Plataforma colaborativa para educadores
+            Plataforma para professores de Biologia
           </div>
 
           <h1 className="max-w-4xl text-balance text-4xl font-bold leading-tight tracking-tight text-primary-foreground md:text-5xl lg:text-6xl">
-            Compartilhe suas experiencias.{" "}
-            <span className="text-mustard">Transforme a educacao.</span>
+            Compartilhe suas Sequencias Didaticas Investigativas.{" "}
+            <span className="text-mustard">Biologia em foco.</span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/70 md:text-xl">
-            Um espaco acolhedor onde professores trocam vivencias pedagogicas,
-            descobrem praticas inovadoras e constroem juntos uma educacao mais
-            criativa e significativa.
+            Um espaco dedicado a professores de Biologia para trocar sequencias
+            didaticas, investigar problemas reais e aplicar o metodo cientifico
+            no Ensino Medio.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -44,7 +44,7 @@ export function Hero() {
               className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary text-base px-8"
               asChild
             >
-              <Link href="/dashboard">Explorar Experiencias</Link>
+              <Link href="/dashboard">Explorar SDIs de Biologia</Link>
             </Button>
           </div>
 
@@ -61,7 +61,7 @@ export function Hero() {
                 <BookOpen className="h-6 w-6 text-mustard" />
               </div>
               <span className="text-2xl font-bold text-primary-foreground">480+</span>
-              <span className="text-xs text-primary-foreground/60">Experiencias</span>
+              <span className="text-xs text-primary-foreground/60">SDIs de Biologia</span>
             </div>
             <div className="flex flex-col items-center gap-2">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-moss/20">

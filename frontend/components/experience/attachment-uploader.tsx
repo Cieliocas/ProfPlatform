@@ -141,7 +141,12 @@ export function AttachmentUploader({ onAttachmentsChange }: AttachmentUploaderPr
                                 <div className="flex items-center gap-3 overflow-hidden">
                                     {renderIcon(att.file_type)}
                                     <span className="text-sm font-medium truncate max-w-[150px] md:max-w-[200px]" title={att.file_name}>
-                                        {att.file_type === 'link' ? new URL(att.file_name).hostname : att.file_name}
+                                        {att.file_type === 'link'
+                                            ? (() => {
+                                                try { return new URL(att.file_name).hostname }
+                                                catch (e) { return att.file_name }
+                                            })()
+                                            : att.file_name}
                                     </span>
                                 </div>
                                 <Button

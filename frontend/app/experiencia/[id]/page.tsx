@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { ExperienceDetail } from "@/components/experience/experience-detail"
+import { experiences as mockExperiences } from "@/src/lib/mock-data"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -21,7 +22,12 @@ async function getExperience(id: string) {
 
 export default async function ExperienceDetailPage({ params }: PageProps) {
   const { id } = await params
-  const experience = await getExperience(id);
+  const apiExperience = await getExperience(id)
+  const mockExperience = mockExperiences.find((exp) => exp.id === id)
+  const experience = apiExperience || (mockExperience ? {
+    ...mockExperience,
+    created_at: mockExperience.createdAt,
+  } : null)
 
   if (!experience) {
     notFound()

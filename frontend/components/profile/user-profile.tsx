@@ -165,7 +165,7 @@ export function UserProfile({ author, authorExperiences }: UserProfileProps) {
                     <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
                     <AlertDialogDescription>
                       Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta
-                      e todas as publicações (experiências) associadas a você dos nossos servidores.
+                      e todas as publicações (sequencias didaticas) associadas a você dos nossos servidores.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <div className="my-4 flex flex-col gap-2">
@@ -247,7 +247,7 @@ export function UserProfile({ author, authorExperiences }: UserProfileProps) {
                 Nenhuma publicacao ainda
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Compartilhe sua primeira experiencia pedagogica!
+                Compartilhe sua primeira sequencia didatica!
               </p>
             </div>
           )}
@@ -257,10 +257,10 @@ export function UserProfile({ author, authorExperiences }: UserProfileProps) {
           <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card py-16 text-center">
             <Bookmark className="mb-4 h-10 w-10 text-muted-foreground" />
             <p className="text-lg font-medium text-foreground">
-              Nenhuma experiencia salva
+              Nenhuma sequencia didatica salva
             </p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Explore o feed e salve praticas que voce quer experimentar.
+              Explore o feed e salve sequencias que voce quer experimentar.
             </p>
           </div>
         </TabsContent>

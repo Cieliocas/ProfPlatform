@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import Boolean, Column, Integer, String, Text, DateTime, ForeignKey, ARRAY
+from sqlalchemy import Boolean, Column, Integer, String, Text, DateTime, ForeignKey, ARRAY, JSON
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -47,7 +47,8 @@ class Experience(Base):
     classification = Column(String, index=True) # Plano de aula simples, Sequência didática, Experiência comum, Informação
     discipline = Column(String, index=True) # Focus on Natural Sciences
     
-    tags = Column(ARRAY(String), default=[])
+    steps = Column(JSON, default=list)
+    tags = Column(ARRAY(String), default=list)
     upvotes = Column(Integer, default=0)
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
 

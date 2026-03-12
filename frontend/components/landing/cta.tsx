@@ -12,11 +12,11 @@ export function CTA() {
 
           <div className="relative">
             <h2 className="text-balance text-3xl font-bold tracking-tight text-primary-foreground md:text-4xl">
-              Pronto para transformar sua pratica?
+              Pronto para fortalecer sua pratica em Biologia?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-primary-foreground/70">
-              Junte-se a centenas de professores que ja estao compartilhando e
-              descobrindo experiencias pedagogicas incriveis.
+              Junte-se a professores de Biologia que ja estao compartilhando e
+              descobrindo sequencias didaticas investigativas.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button
@@ -35,7 +35,7 @@ export function CTA() {
                 className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground hover:text-primary text-base"
                 asChild
               >
-                <Link href="/dashboard">Ver Experiencias</Link>
+                <Link href="/dashboard">Ver SDIs de Biologia</Link>
               </Button>
             </div>
           </div>

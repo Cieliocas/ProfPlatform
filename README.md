@@ -208,7 +208,7 @@ ALTER TABLE experiences ADD COLUMN IF NOT EXISTS steps JSON DEFAULT '[]';
 
 ## 14) Créditos
 
-### Orientação Acadêmica e Idealizadora
+### Idealizadora
 **Profa. Suzianne Valadares**
 Mestranda em Ensino de Ciências e Biologia | Universidade Estadual do Piauí — UESPI
 Pesquisadora em metodologias investigativas para o Ensino Médio de Biologia

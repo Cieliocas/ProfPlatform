@@ -30,9 +30,6 @@ import httpx
 # Configuração
 # ---------------------------------------------------------------------------
 
-# A URL base do FRONTEND (Vercel ou localhost) — para montar as URLs dos docs
-FRONTEND_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:3000"
-
 # A URL do BACKEND (Render ou localhost:8000)
 BACKEND_URL = os.getenv("SEED_API_URL", "http://localhost:8000")
 
@@ -40,17 +37,17 @@ BACKEND_URL = os.getenv("SEED_API_URL", "http://localhost:8000")
 DEFAULT_PASSWORD = "SuzianneMestrado2026!"
 
 # ---------------------------------------------------------------------------
-# URLs permanentes dos documentos
+# URLs dos documentos
 # ---------------------------------------------------------------------------
+# Docs pequenos: URLs relativas /docs/ — funcionam em qualquer ambiente
+# (Vercel serve frontend/public/docs/; localhost serve via Next.js static)
+DOC_SHIRLEY     = "/docs/AASA_Shirley_de_Sousa_Brito.docx"
+DOC_ROBERTH_BSA = "/docs/BSA_Apresentacao_AASA_Prof_Roberth.pdf"
+DOC_SAMARA      = "/docs/Planejamento_AASA_Samara.pdf"
+DOC_OCEANO      = "/docs/Oceano_em_Apuros.pdf"
 
-# Docs pequenos — servidos pelo Next.js (Vercel) em /public/docs/
-DOC_SHIRLEY   = f"{FRONTEND_URL}/docs/AASA_Shirley_de_Sousa_Brito.docx"
-DOC_ROBERTH_BSA = f"{FRONTEND_URL}/docs/BSA_Apresentacao_AASA_Prof_Roberth.pdf"
-DOC_SAMARA    = f"{FRONTEND_URL}/docs/Planejamento_AASA_Samara.pdf"
-DOC_OCEANO    = f"{FRONTEND_URL}/docs/Oceano_em_Apuros.pdf"
-
-# Cartilha grande (86MB) — hospedada no GitHub Releases v1.0-mvp
-DOC_CARTILHA  = "https://github.com/Cieliocas/ProfPlatform/releases/download/v1.0-mvp/Cartilha_Aulas_Praticas_Biologia_IA.pdf"
+# Cartilha grande (86MB) — hospedada no GitHub Releases v1.0-mvp (URL absoluta)
+DOC_CARTILHA = "https://github.com/Cieliocas/ProfPlatform/releases/download/v1.0-mvp/Cartilha_Aulas_Praticas_Biologia_IA.pdf"
 
 # ---------------------------------------------------------------------------
 # Dados dos professores e suas publicações
@@ -316,9 +313,8 @@ def create_post(client: httpx.Client, token: str, post: dict):
 def main():
     print("\n🌱 ProfPlatform — Seed de Dados MVP")
     print(f"   Backend:  {BACKEND_URL}")
-    print(f"   Frontend: {FRONTEND_URL}")
-    print(f"   Docs estáticos servidos via: {FRONTEND_URL}/docs/")
-    print(f"   Cartilha hospedada em: GitHub Releases v1.0-mvp\n")
+    print(f"   Docs estáticos: /docs/ (relativo — Vercel/localhost)")
+    print(f"   Cartilha: GitHub Releases v1.0-mvp\n")
 
     # Verificar se o backend está acessível
     try:
@@ -357,8 +353,8 @@ def main():
 
     print(f"\n{'='*60}")
     print("🎉 Seed concluído!")
-    print(f"   Local:    http://localhost:3000/dashboard")
-    print(f"   Produção: https://bioativa.vercel.app/dashboard (após deploy)")
+    print("   Local:    http://localhost:3000/dashboard")
+    print("   Produção: https://bioativa.vercel.app/dashboard (após deploy)")
     print(f"{'='*60}\n")
 
 

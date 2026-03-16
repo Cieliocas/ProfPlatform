@@ -15,10 +15,17 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
     const isImage = ["png", "jpg", "jpeg", "webp", "gif", "image"].includes(attachment.file_type)
     const isLink = attachment.file_type === "link"
 
-    // Se a url veio como path relativo interno, repriorizamos pro túnel Next.js evitar HTTP 404
-    const realUrl = (!isLink && attachment?.file_url?.startsWith("/api/v1/"))
-        ? `/api/proxy${attachment.file_url}`
-        : (attachment?.file_url || "")
+    // Resolve a URL real do arquivo:
+    // - /api/v1/... → proxy interno do Next.js (uploads antigos)
+    // - /docs/...   → arquivo estático do Next.js (public/docs/)
+    // - https://... → URL absoluta externa (GitHub Releases, etc.)
+    const rawUrl = attachment?.file_url || ""
+    const realUrl = rawUrl.startsWith("/api/v1/")
+        ? `/api/proxy${rawUrl}`
+        : rawUrl
+
+    // URLs absolutas externas (ex: GitHub Releases) devem abrir em nova aba
+    const isExternalUrl = rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
 
     // Para Links externos, apenas redirecionamos. Não há 'Preview' de HTML solto.
     if (isLink) {
@@ -36,7 +43,12 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
     }
 
     const handleDownload = () => {
-        // Tenta forçar o download direto via tag 'a' oculta e atributo download
+        if (isExternalUrl) {
+            // URLs externas (GitHub Releases etc.) — abrir em nova aba
+            window.open(realUrl, "_blank", "noopener,noreferrer")
+            return
+        }
+        // Arquivos estáticos (Vercel /docs/) — forçar download
         const link = document.createElement("a")
         link.href = realUrl
         link.download = attachment.file_name
@@ -104,10 +116,17 @@ export function DownloadPreviewDialog({ attachment, children }: DownloadPreviewD
                             <Button variant="outline" onClick={() => setOpen(false)}>
                                 Cancelar
                             </Button>
-                            <Button onClick={handleDownload} className="bg-navy hover:bg-navy/90 text-white">
-                                <Download className="mr-2 h-4 w-4" />
-                                Fazer Download
-                            </Button>
+                            {isExternalUrl ? (
+                                <Button onClick={handleDownload} className="bg-navy hover:bg-navy/90 text-white">
+                                    <ExternalLink className="mr-2 h-4 w-4" />
+                                    Abrir Documento
+                                </Button>
+                            ) : (
+                                <Button onClick={handleDownload} className="bg-navy hover:bg-navy/90 text-white">
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Fazer Download
+                                </Button>
+                            )}
                         </div>
                     </div>
                 )}

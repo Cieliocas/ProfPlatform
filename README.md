@@ -210,12 +210,12 @@ ALTER TABLE experiences ADD COLUMN IF NOT EXISTS steps JSON DEFAULT '[]';
 
 ### Orientação Acadêmica e Idealizadora
 **Profa. Suzianne Valadares**
-Mestre em Ensino de Ciências e Biologia | Universidade Estadual do Piauí — UESPI
+Mestranda em Ensino de Ciências e Biologia | Universidade Estadual do Piauí — UESPI
 Pesquisadora em metodologias investigativas para o Ensino Médio de Biologia
 
 ### Professores colaboradores com sequências didáticas originais
 - **Shirley de Sousa Brito** — UESPI / Teresina-PI
-- **Roberth Logosvitae** — Rede Estadual de Ensino do Piauí
+- **Roberth** — Rede Estadual de Ensino do Piauí
 - **Samara Costa Oliveira** — Rede Estadual de Ensino do Piauí
 
 ### Desenvolvimento técnico

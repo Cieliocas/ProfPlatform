@@ -3,14 +3,23 @@
 seed_mvp.py — Seed de dados reais para o ProfPlatform MVP
 ==========================================================
 Cria usuários-professores reais e publica suas Sequências Didáticas
-com os documentos originais anexados.
+com os documentos originais anexados via URLs permanentes.
+
+Estratégia de hospedagem dos documentos:
+  - Docs pequenos (<5MB): servidos via Vercel (frontend/public/docs/)
+  - Cartilha grande (86MB): hospedada no GitHub Releases v1.0-mvp
 
 Uso:
-    python3 seed_mvp.py
+    python3 seed_mvp.py [URL_BASE]
+
+    URL_BASE padrão: http://localhost:3000 (desenvolvimento local)
+
+    Em produção (após deploy Vercel):
+    python3 seed_mvp.py https://bioativa.vercel.app
 
 Pré-requisitos:
     pip install httpx
-    docker compose up -d   (backend + db rodando)
+    Backend rodando (docker compose up -d OU Render)
 """
 
 import os
@@ -20,13 +29,33 @@ import httpx
 # ---------------------------------------------------------------------------
 # Configuração
 # ---------------------------------------------------------------------------
-BASE_URL = os.getenv("SEED_API_URL", "http://localhost:8000")
-SEED_DOCS_DIR = os.path.join(os.path.dirname(__file__), "seed_docs")
+
+# A URL base do FRONTEND (Vercel ou localhost) — para montar as URLs dos docs
+FRONTEND_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:3000"
+
+# A URL do BACKEND (Render ou localhost:8000)
+BACKEND_URL = os.getenv("SEED_API_URL", "http://localhost:8000")
+
+# Senha padrão para todos os usuários de demonstração
 DEFAULT_PASSWORD = "SuzianneMestrado2026!"
+
+# ---------------------------------------------------------------------------
+# URLs permanentes dos documentos
+# ---------------------------------------------------------------------------
+
+# Docs pequenos — servidos pelo Next.js (Vercel) em /public/docs/
+DOC_SHIRLEY   = f"{FRONTEND_URL}/docs/AASA_Shirley_de_Sousa_Brito.docx"
+DOC_ROBERTH_BSA = f"{FRONTEND_URL}/docs/BSA_Apresentacao_AASA_Prof_Roberth.pdf"
+DOC_SAMARA    = f"{FRONTEND_URL}/docs/Planejamento_AASA_Samara.pdf"
+DOC_OCEANO    = f"{FRONTEND_URL}/docs/Oceano_em_Apuros.pdf"
+
+# Cartilha grande (86MB) — hospedada no GitHub Releases v1.0-mvp
+DOC_CARTILHA  = "https://github.com/Cieliocas/ProfPlatform/releases/download/v1.0-mvp/Cartilha_Aulas_Praticas_Biologia_IA.pdf"
 
 # ---------------------------------------------------------------------------
 # Dados dos professores e suas publicações
 # ---------------------------------------------------------------------------
+
 PROFESSORS = [
     {
         "name": "Shirley de Sousa Brito",
@@ -56,7 +85,11 @@ PROFESSORS = [
                     {"title": "Análise e Discussão", "description": "Comparação de dados coletados com a literatura e construção de gráficos."},
                     {"title": "Proposta de Intervenção", "description": "Elaboração de campanha de conscientização e relatório final."},
                 ],
-                "document": "AASA_Shirley_de_Sousa_Brito.docx",
+                "attachment": {
+                    "file_name": "AASA Shirley de Sousa Brito",
+                    "file_type": "docx",
+                    "file_url": DOC_SHIRLEY,
+                },
             }
         ],
     },
@@ -86,7 +119,11 @@ PROFESSORS = [
                     {"title": "Coleta e Análise", "description": "Uso de IA para organizar e interpretar dados coletados pelos alunos."},
                     {"title": "Síntese", "description": "Produção de relatório multimídia integrando evidências e conclusões."},
                 ],
-                "document": "Cartilha_Aulas_Praticas_Biologia_IA.pdf",
+                "attachment": {
+                    "file_name": "Cartilha Aulas Práticas Biologia com IA",
+                    "file_type": "pdf",
+                    "file_url": DOC_CARTILHA,
+                },
             },
             {
                 "title": "Quais evidências científicas os alunos conseguem construir sobre biodiversidade local?",
@@ -106,7 +143,11 @@ PROFESSORS = [
                     {"title": "Análise", "description": "Sistematização dos dados e comparação com referências."},
                     {"title": "Seminário", "description": "Apresentação dos resultados para a comunidade escolar."},
                 ],
-                "document": "BSA_Apresentacao_AASA_Prof_Roberth.pdf",
+                "attachment": {
+                    "file_name": "BSA Apresentação AASA Prof Roberth Turma 06",
+                    "file_type": "pdf",
+                    "file_url": DOC_ROBERTH_BSA,
+                },
             },
         ],
     },
@@ -137,7 +178,11 @@ PROFESSORS = [
                     {"title": "Sistematização", "description": "Construção coletiva de conceitos a partir das evidências."},
                     {"title": "Avaliação", "description": "Registro e autoavaliação do percurso investigativo."},
                 ],
-                "document": "Planejamento_AASA_Samara.pdf",
+                "attachment": {
+                    "file_name": "Planejamento AASA Samara Final",
+                    "file_type": "pdf",
+                    "file_url": DOC_SAMARA,
+                },
             }
         ],
     },
@@ -171,7 +216,11 @@ PROFESSORS = [
                     {"title": "Experimento Simulado", "description": "Simulação do impacto de microplásticos em cadeia alimentar."},
                     {"title": "Divulgação Científica", "description": "Produção de cartaz ou vídeo de conscientização."},
                 ],
-                "document": "Oceano_em_Apuros.pdf",
+                "attachment": {
+                    "file_name": "Oceano em Apuros",
+                    "file_type": "pdf",
+                    "file_url": DOC_OCEANO,
+                },
             }
         ],
     },
@@ -181,30 +230,28 @@ PROFESSORS = [
 # Funções auxiliares
 # ---------------------------------------------------------------------------
 
-def register_user(client: httpx.Client, professor: dict) -> dict | None:
-    """Registra o professor. Retorna dados básicos ou None se já existir."""
+def register_user(client: httpx.Client, professor: dict) -> bool:
     payload = {
         "name": professor["name"],
         "email": professor["email"],
         "password": DEFAULT_PASSWORD,
         "bio": professor["bio"],
     }
-    resp = client.post(f"{BASE_URL}/api/v1/auth/register", json=payload)
+    resp = client.post(f"{BACKEND_URL}/api/v1/auth/register", json=payload)
     if resp.status_code == 201:
         print(f"  ✅ Usuário criado: {professor['name']}")
-        return resp.json()
+        return True
     elif resp.status_code == 400 and "already registered" in resp.text:
         print(f"  ℹ️  Já existe: {professor['name']} — continuando...")
-        return {"already_exists": True}
+        return True
     else:
         print(f"  ❌ Erro ao registrar {professor['name']}: {resp.status_code} {resp.text}")
-        return None
+        return False
 
 
 def login_user(client: httpx.Client, email: str) -> str | None:
-    """Faz login e retorna o access token."""
     resp = client.post(
-        f"{BASE_URL}/api/v1/auth/login",
+        f"{BACKEND_URL}/api/v1/auth/login",
         data={"username": email, "password": DEFAULT_PASSWORD},
         headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
@@ -218,14 +265,13 @@ def login_user(client: httpx.Client, email: str) -> str | None:
 
 
 def update_profile(client: httpx.Client, token: str, professor: dict):
-    """Atualiza campos adicionais do perfil."""
     update_payload = {
         k: professor.get(k)
         for k in ["location_city", "location_state", "workplace", "graduation_level"]
         if professor.get(k)
     }
     resp = client.put(
-        f"{BASE_URL}/api/v1/auth/me",
+        f"{BACKEND_URL}/api/v1/auth/me",
         json=update_payload,
         headers={"Authorization": f"Bearer {token}"},
     )
@@ -235,50 +281,9 @@ def update_profile(client: httpx.Client, token: str, professor: dict):
         print(f"  ⚠️  Aviso ao atualizar perfil: {resp.status_code}")
 
 
-def upload_document(client: httpx.Client, token: str, doc_filename: str) -> dict | None:
-    """Faz upload do documento e retorna o objeto attachment."""
-    doc_path = os.path.join(SEED_DOCS_DIR, doc_filename)
-    if not os.path.exists(doc_path):
-        print(f"  ⚠️  Arquivo não encontrado: {doc_path} — pulando upload")
-        return None
-
-    ext = doc_filename.rsplit(".", 1)[-1].lower()
-    mime_map = {
-        "pdf": "application/pdf",
-        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    }
-    mime = mime_map.get(ext, "application/octet-stream")
-
-    file_size_mb = os.path.getsize(doc_path) / (1024 * 1024)
-    print(f"  📤 Enviando '{doc_filename}' ({file_size_mb:.1f} MB)...")
-
-    with open(doc_path, "rb") as f:
-        resp = client.post(
-            f"{BASE_URL}/api/v1/upload",
-            files={"file": (doc_filename, f, mime)},
-            headers={"Authorization": f"Bearer {token}"},
-            timeout=120.0,  # timeout generoso para arquivos grandes
-        )
-
-    if resp.status_code == 201:
-        data = resp.json()
-        print(f"  ✅ Upload OK: {data['file_url']}")
-        # Limpar o nome do arquivo para exibição (remove o UUID prefix)
-        display_name = doc_filename.replace("_", " ").rsplit(".", 1)[0]
-        return {
-            "file_name": display_name,
-            "file_type": data["file_type"],
-            "file_url": data["file_url"],
-        }
-    else:
-        print(f"  ❌ Erro no upload: {resp.status_code} {resp.text[:200]}")
-        return None
-
-
-def create_post(client: httpx.Client, token: str, post: dict, attachment: dict | None):
-    """Cria a publicação com o attachment já upado."""
-    attachments = [attachment] if attachment else []
+def create_post(client: httpx.Client, token: str, post: dict):
+    """Cria a publicação com URL permanente do documento como attachment."""
+    attachment = post["attachment"]
 
     payload = {
         "title": post["title"],
@@ -287,11 +292,11 @@ def create_post(client: httpx.Client, token: str, post: dict, attachment: dict |
         "discipline": post["discipline"],
         "tags": post["tags"],
         "steps": post["steps"],
-        "attachments": attachments,
+        "attachments": [attachment],
     }
 
     resp = client.post(
-        f"{BASE_URL}/api/v1/experiences",
+        f"{BACKEND_URL}/api/v1/experiences",
         json=payload,
         headers={"Authorization": f"Bearer {token}"},
         timeout=30.0,
@@ -299,6 +304,7 @@ def create_post(client: httpx.Client, token: str, post: dict, attachment: dict |
 
     if resp.status_code == 201:
         print(f"  ✅ Post criado: \"{post['title'][:60]}...\"")
+        print(f"     📎 Anexo: {attachment['file_name']} → {attachment['file_url'][:60]}...")
     else:
         print(f"  ❌ Erro ao criar post: {resp.status_code} {resp.text[:300]}")
 
@@ -309,17 +315,20 @@ def create_post(client: httpx.Client, token: str, post: dict, attachment: dict |
 
 def main():
     print("\n🌱 ProfPlatform — Seed de Dados MVP")
-    print(f"   API: {BASE_URL}")
-    print(f"   Docs: {SEED_DOCS_DIR}\n")
+    print(f"   Backend:  {BACKEND_URL}")
+    print(f"   Frontend: {FRONTEND_URL}")
+    print(f"   Docs estáticos servidos via: {FRONTEND_URL}/docs/")
+    print(f"   Cartilha hospedada em: GitHub Releases v1.0-mvp\n")
 
-    # Verificar se o backend está respondendo
+    # Verificar se o backend está acessível
     try:
-        r = httpx.get(f"{BASE_URL}/", timeout=5.0)
+        r = httpx.get(f"{BACKEND_URL}/", timeout=5.0)
         print(f"✅ Backend acessível: {r.json()}\n")
     except Exception as e:
-        print(f"❌ Não foi possível conectar ao backend em {BASE_URL}")
+        print(f"❌ Não foi possível conectar ao backend em {BACKEND_URL}")
         print(f"   Erro: {e}")
-        print("   → Certifique-se que 'docker compose up -d' está rodando.\n")
+        print("   → Certifique-se que 'docker compose up -d' está rodando (local)")
+        print("   → Ou defina SEED_API_URL=https://sua-api.onrender.com\n")
         sys.exit(1)
 
     with httpx.Client() as client:
@@ -329,8 +338,8 @@ def main():
             print(f"{'='*60}")
 
             # 1. Registrar (ou ignorar se já existe)
-            result = register_user(client, professor)
-            if result is None:
+            ok = register_user(client, professor)
+            if not ok:
                 continue
 
             # 2. Login para obter token
@@ -341,18 +350,15 @@ def main():
             # 3. Atualizar perfil com dados adicionais
             update_profile(client, token, professor)
 
-            # 4. Criar cada post do professor
+            # 4. Criar cada post do professor (com URLs permanentes — sem upload)
             for post in professor["posts"]:
                 print(f"\n  📄 Post: \"{post['title'][:55]}...\"")
-
-                # Upload do documento
-                attachment = upload_document(client, token, post["document"])
-
-                # Criar a publicação
-                create_post(client, token, post, attachment)
+                create_post(client, token, post)
 
     print(f"\n{'='*60}")
-    print("🎉 Seed concluído! Acesse http://localhost:3000/dashboard")
+    print("🎉 Seed concluído!")
+    print(f"   Local:    http://localhost:3000/dashboard")
+    print(f"   Produção: https://bioativa.vercel.app/dashboard (após deploy)")
     print(f"{'='*60}\n")
 
 

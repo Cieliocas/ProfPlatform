@@ -91,8 +91,8 @@ PROFESSORS = [
         ],
     },
     {
-        "name": "Roberth Logosvitae",
-        "email": "roberth.logosvitae@escola.pi.gov.br",
+        "name": "Prof. Roberth",
+        "email": "roberth@escola.pi.gov.br",
         "bio": "Professor de Biologia e produtor de materiais didáticos digitais com integração de IA. Ensino Médio — Piauí.",
         "location_city": "Teresina",
         "location_state": "PI",

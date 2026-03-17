@@ -184,16 +184,13 @@ PROFESSORS = [
         ],
     },
     {
-        "name": "Suzianne Melo Barros",
-        "email": "suzianne.barros@uespi.edu.br",
-        "bio": (
-            "Professora Mestre em Ensino de Ciências e Biologia. Coordena pesquisas sobre "
-            "metodologias investigativas no Ensino Médio. UESPI/Teresina-PI."
-        ),
+        "name": "Samara Oliveira da Silva",
+        "email": "samara.silva@escola.pi.gov.br",
+        "bio": "Professora de Ciências e Biologia no Ensino Médio. Desenvolve sequências didáticas investigativas com foco em ecossistemas marinhos e educação ambiental.",
         "location_city": "Teresina",
         "location_state": "PI",
-        "workplace": "Universidade Estadual do Piauí - UESPI",
-        "graduation_level": "Mestre",
+        "workplace": "Rede Estadual de Ensino do Piauí",
+        "graduation_level": "Especialista",
         "posts": [
             {
                 "title": "O que acontece com os ecossistemas marinhos diante da poluição por plásticos?",

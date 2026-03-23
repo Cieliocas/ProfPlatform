@@ -7,6 +7,7 @@ import { UserProfile } from "@/components/profile/user-profile"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
 import { Loader2 } from "lucide-react"
+import { experiences as mockExperiences } from "@/src/lib/mock-data"
 
 export default function ProfilePage() {
   const { user, isLoading: authLoading } = useAuth()
@@ -20,12 +21,22 @@ export default function ProfilePage() {
           if (Array.isArray(data)) {
             // O backend já filtra pelo author_id, mas deixamos proteção extra
             const myExps = data.filter((e: any) => e.author_id === user.id)
-            setExperiences(myExps)
+            if (myExps.length > 0) {
+              setExperiences(myExps)
+              return
+            }
+            const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
+            setExperiences(fallback)
           } else {
-            setExperiences([])
+            const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
+            setExperiences(fallback)
           }
         })
-        .catch((err: any) => console.error("Error fetching experiences:", err))
+        .catch((err: any) => {
+          console.error("Error fetching experiences:", err)
+          const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
+          setExperiences(fallback)
+        })
         .finally(() => setLoadingExp(false))
     } else if (!authLoading) {
       setLoadingExp(false)

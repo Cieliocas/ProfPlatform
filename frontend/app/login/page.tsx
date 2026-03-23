@@ -172,7 +172,21 @@ export default function LoginPage() {
               >
                 {isLoading ? "Entrando..." : "Entrar"}
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full border-border"
+                onClick={() => {
+                  setEmail("suzianne@bioativa.app")
+                  setPassword("suzianne2026")
+                }}
+              >
+                Usar conta de demonstracao
+              </Button>
             </form>
+            <p className="text-xs text-muted-foreground text-center">
+              Demo banca: <span className="font-semibold">suzianne@bioativa.app</span> / <span className="font-semibold">suzianne2026</span>
+            </p>
 
             <p className="text-center text-sm text-muted-foreground">
               Nao tem uma conta?{" "}

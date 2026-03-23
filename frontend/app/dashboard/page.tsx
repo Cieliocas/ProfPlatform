@@ -31,10 +31,14 @@ export default function DashboardPage() {
     experienceService.fetchExperiences()
       .then((data: any[]) => {
         if (Array.isArray(data) && data.length > 0) {
-          setExperiences(data)
-        } else {
-          setExperiences(mockExperiences)
+          const merged = [
+            ...mockExperiences,
+            ...data.filter((exp: any) => !mockExperiences.some((mock) => String(mock.id) === String(exp.id))),
+          ]
+          setExperiences(merged)
+          return
         }
+        setExperiences(mockExperiences)
       })
       .catch((err: any) => {
         console.error(err)

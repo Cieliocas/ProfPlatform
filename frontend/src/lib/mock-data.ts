@@ -50,7 +50,7 @@ export interface Attachment {
 }
 
 const authorSeeds = [
-  { name: "Ana Beatriz Silva", bio: "Professora de Biologia com foco em ecologia e projetos de campo." },
+  { name: "Suzianne Valadares", bio: "Professora de Biologia com foco em sequencias didaticas investigativas no Ensino Medio." },
   { name: "Carlos Eduardo Santos", bio: "Professor de Biologia celular e investigador de metodologias ativas." },
   { name: "Maria Lucia Ferreira", bio: "Atua com genetica e biotecnologia no Ensino Medio." },
   { name: "Roberto Almeida", bio: "Especialista em zoologia e conservacao da fauna local." },
@@ -121,8 +121,8 @@ const connections = ["Quimica", "Geografia", "Matematica", "Historia"]
 
 const attachmentPool: Attachment[] = [
   { file_name: "roteiro_investigacao.pdf", file_type: "pdf", file_url: "/mock/roteiro_investigacao.pdf" },
-  { file_name: "planilha_coleta.xlsx", file_type: "xlsx", file_url: "/mock/planilha_coleta.xlsx" },
-  { file_name: "guia_pratico.docx", file_type: "docx", file_url: "/mock/guia_pratico.docx" },
+  { file_name: "sequencia_polinizadores.pdf", file_type: "pdf", file_url: "/mock/sequencia_polinizadores.pdf" },
+  { file_name: "relatorio_ecossistema.pdf", file_type: "pdf", file_url: "/mock/relatorio_ecossistema.pdf" },
   { file_name: "mapa_campo.jpg", file_type: "jpg", file_url: "/mock/mapa_campo.jpg" },
   { file_name: "https://dados.biodiversidade.gov.br", file_type: "link", file_url: "https://dados.biodiversidade.gov.br" },
 ]

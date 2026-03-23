@@ -1,8 +1,27 @@
 import { NextResponse } from 'next/server';
+import { DEMO_CREDENTIALS, DEMO_TOKEN, DEMO_USER } from '@/src/lib/demo-user';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
+
+        // Fallback deterministico para apresentação.
+        if (body.email === DEMO_CREDENTIALS.email && body.password === DEMO_CREDENTIALS.password) {
+            const res = NextResponse.json(
+                { success: true, access_token: DEMO_TOKEN, token_type: 'bearer', user: DEMO_USER },
+                { status: 200 }
+            );
+            res.cookies.set({
+                name: 'token',
+                value: DEMO_TOKEN,
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 7,
+                path: '/',
+            });
+            return res;
+        }
 
         // FastAPI expects form encoded for OAuth2PasswordRequestForm
         const formData = new URLSearchParams();

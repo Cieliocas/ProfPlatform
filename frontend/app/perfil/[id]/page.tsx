@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState, use } from "react"
-import { notFound } from "next/navigation"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { UserProfile } from "@/components/profile/user-profile"
@@ -9,6 +8,7 @@ import { authService } from "@/src/services/authService"
 import { experienceService } from "@/src/services/experienceService"
 import { User } from "@/src/types/auth"
 import { Loader2 } from "lucide-react"
+import { authors as mockAuthors, experiences as mockExperiences } from "@/src/lib/mock-data"
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -38,8 +38,19 @@ export default function UserProfilePage({ params }: PageProps) {
         setUserExperiences(Array.isArray(expsData) ? expsData : [])
       } catch (error) {
         console.error("Erro ao carregar perfil:", error)
-        // Se 404 a API retornará error, notFound não funciona muito bem assíncrono dentro do useEffect Client
-        // então lidamos com UI condicional abaixo.
+        const fallbackAuthor = mockAuthors.find((a) => String(a.id) === String(id))
+        const fallbackExperiences = mockExperiences.filter((exp) => String(exp.author?.id) === String(id))
+
+        if (fallbackAuthor) {
+          setAuthor({
+            id: Number(fallbackAuthor.id),
+            name: fallbackAuthor.name,
+            email: `${fallbackAuthor.id}@bioativa.local`,
+            bio: fallbackAuthor.bio,
+            experienceCount: fallbackExperiences.length,
+          } as unknown as User)
+          setUserExperiences(fallbackExperiences)
+        }
       } finally {
         setLoading(false)
       }

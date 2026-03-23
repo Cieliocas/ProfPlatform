@@ -9,14 +9,19 @@ interface PageProps {
 }
 
 async function getExperience(id: string) {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 2200)
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/v1/experiences/${id}`, {
-      cache: 'no-store'
+      cache: 'no-store',
+      signal: controller.signal,
     });
     if (!res.ok) return null;
     return res.json();
   } catch (e) {
     return null;
+  } finally {
+    clearTimeout(timeout)
   }
 }
 

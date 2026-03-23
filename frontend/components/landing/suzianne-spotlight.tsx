@@ -48,6 +48,33 @@ const recommendedCards = [
     icon: "book",
     coverUrl: "/uespi-books/covers/sequenciaVol07.pdf.png",
   },
+  {
+    id: "samara-oceano",
+    type: "SDI recomendada",
+    title: "OCEANO EM APUROS",
+    summary:
+      "Abordagem educomunicativa sobre ciclo do carbono e mudanças climáticas com síntese criativa dos estudantes.",
+    byline: "Profa. Samara Oliveira da Silva",
+    footer: "Referência interdisciplinar",
+    hrefLoggedIn: "/experiencia/real-2",
+    hrefLoggedOut: "/login",
+    requiresAuth: true,
+    icon: "leaf",
+  },
+  {
+    id: "uespi-bonus",
+    type: "Livro UESPI",
+    title: "Epigenética e Doenças Crônicas",
+    summary:
+      "Livro bônus da UESPI com propostas de sequências didáticas para o Ensino Médio em Biologia.",
+    byline: "Editora UESPI",
+    footer: "Acervo UESPI",
+    hrefLoggedIn: "/livros-uespi",
+    hrefLoggedOut: "/livros-uespi",
+    requiresAuth: false,
+    icon: "book",
+    coverUrl: "/uespi-books/covers/sequenciaBonus.pdf.png",
+  },
 ] as const
 
 export function SuzianneSpotlight() {
@@ -85,7 +112,7 @@ export function SuzianneSpotlight() {
           <div className="mb-5 grid gap-4 lg:grid-cols-[180px_1fr]">
             <div className="rounded-xl bg-mustard/90 p-4 text-navy">
               <p className="text-xs font-semibold uppercase tracking-widest">Curadoria</p>
-              <p className="mt-2 text-2xl font-bold leading-none">Top 3</p>
+              <p className="mt-2 text-2xl font-bold leading-none">Top 5</p>
               <p className="mt-2 text-sm">Indicações para inspirar a produção de SDIs em Biologia.</p>
               <div className="mt-3 flex gap-1 text-navy">
                 <Star className="h-4 w-4 fill-current" />

@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { checkAuth } = useAuth()
+  const { checkAuth, login } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
@@ -88,10 +88,18 @@ export default function LoginPage() {
                 e.preventDefault()
                 setIsLoading(true)
                 try {
-                  await authService.login({ email, password })
-                  await checkAuth()
+                  const authResponse = await authService.login({ email, password })
+
+                  if (authResponse.user) {
+                    login(authResponse.access_token, authResponse.user)
+                  } else {
+                    // Não bloqueia a navegação; apenas sincroniza contexto em paralelo
+                    void checkAuth()
+                  }
+
                   toast.success("Login realizado com sucesso!")
-                  router.push("/dashboard")
+                  router.replace("/dashboard")
+                  router.refresh()
                 } catch (error: any) {
                   const detail = error.response?.data?.detail || ""
                   if (detail.includes("nao verificada") || error.response?.status === 403) {

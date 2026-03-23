@@ -3,27 +3,26 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
-import { Menu, LogIn, LogOut, Loader2 } from "lucide-react"
+import { Menu, LogIn, LogOut, Loader2, ChevronDown, User, Bookmark, LibraryBig, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-const navLinks = [
-  { href: "/minhas-sdis", label: "Minhas SDIs" },
-  { href: "/livros-uespi", label: "Livros UESPI" },
-  { href: "/salvos", label: "Salvos" },
-  { href: "/perfil", label: "Perfil" },
+const primaryLinks = [
+  { href: "/dashboard", label: "Explorar" },
+  { href: "/livros-uespi", label: "UESPI" },
 ]
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { user, logout, isLoggingOut } = useAuth()
-
-  const availableLinks = navLinks.filter(link => {
-    // Esconde links protegidos se não estiver logado
-    if (!user) return false; // Dashboard "Explorar", Compartilhar e Perfil são privados 
-    return true;
-  })
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
@@ -32,8 +31,8 @@ export function Navbar() {
           <Image src="/logo-full.png" alt="Bioativa" width={130} height={40} priority className="object-contain" />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Menu principal">
-          {availableLinks.map((link) => (
+        <nav className="hidden flex-1 items-center justify-center gap-1 px-6 md:flex" aria-label="Menu principal">
+          {primaryLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -47,16 +46,49 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {user ? (
             <div className="flex items-center gap-4">
-              <span className="text-sm font-semibold text-foreground/80">Olá, {user.name.split(' ')[0]}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => { void logout() }}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
-                {isLoggingOut ? "Saindo..." : "Sair"}
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/minhas-sdis">
+                  <LibraryBig className="mr-2 h-4 w-4" />
+                  Minhas SDIs
+                </Link>
               </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm">
+                    {user.name.split(" ")[0]}
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link href="/perfil" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      Perfil
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/minhas-sdis" className="cursor-pointer">
+                      <LibraryBig className="mr-2 h-4 w-4" />
+                      Minhas SDIs
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/salvos" className="cursor-pointer">
+                      <Bookmark className="mr-2 h-4 w-4" />
+                      Salvos
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => { void logout() }}
+                    disabled={isLoggingOut}
+                    className="cursor-pointer"
+                  >
+                    {isLoggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
+                    {isLoggingOut ? "Saindo..." : "Sair"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           ) : (
             <>
@@ -88,16 +120,42 @@ export function Navbar() {
                 <Image src="/logo-full.png" alt="Bioativa" width={130} height={40} priority className="object-contain" />
               </Link>
               <nav className="flex flex-col gap-1" aria-label="Menu mobile">
-                {availableLinks.map((link) => (
+                {primaryLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className="rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                     onClick={() => setOpen(false)}
                   >
+                    {link.label === "Explorar" ? <Compass className="mr-2 inline h-4 w-4" /> : <LibraryBig className="mr-2 inline h-4 w-4" />}
                     {link.label}
                   </Link>
                 ))}
+                {user && (
+                  <>
+                    <Link
+                      href="/minhas-sdis"
+                      className="rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                      onClick={() => setOpen(false)}
+                    >
+                      Minhas SDIs
+                    </Link>
+                    <Link
+                      href="/salvos"
+                      className="rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                      onClick={() => setOpen(false)}
+                    >
+                      Salvos
+                    </Link>
+                    <Link
+                      href="/perfil"
+                      className="rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                      onClick={() => setOpen(false)}
+                    >
+                      Perfil
+                    </Link>
+                  </>
+                )}
               </nav>
               <div className="flex flex-col gap-2 border-t border-border pt-4">
                 {user ? (

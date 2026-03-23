@@ -1,0 +1,17 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="1200" fill="#4A3420"/>
+  <rect x="60" y="80" width="780" height="1040" rx="28" fill="#3C2B1B"/>
+  <rect x="120" y="170" width="660" height="320" rx="20" fill="#6A4B2D"/>
+  <rect x="170" y="220" width="560" height="220" rx="16" fill="#EED8B3"/>
+  <rect x="200" y="250" width="260" height="40" rx="8" fill="#6A4B2D"/>
+  <rect x="200" y="308" width="500" height="24" rx="8" fill="#AD845B"/>
+  <rect x="200" y="348" width="420" height="24" rx="8" fill="#AD845B"/>
+  <rect x="120" y="540" width="660" height="42" rx="10" fill="#F3F7FB"/>
+  <rect x="120" y="606" width="660" height="28" rx="10" fill="#E8DDCE"/>
+  <rect x="120" y="650" width="660" height="28" rx="10" fill="#E8DDCE"/>
+  <rect x="120" y="694" width="500" height="28" rx="10" fill="#E8DDCE"/>
+  <rect x="120" y="790" width="300" height="70" rx="14" fill="#EED8B3"/>
+  <text x="450" y="102" fill="#EED8B3" font-size="28" font-family="Arial, sans-serif" text-anchor="middle">POST DEMONSTRATIVO</text>
+  <text x="450" y="568" fill="#2E1F12" font-size="26" font-family="Arial, sans-serif" text-anchor="middle">Ecologia e impacto ambiental local</text>
+  <text x="270" y="835" fill="#2E1F12" font-size="24" font-family="Arial, sans-serif" text-anchor="middle">Ver exemplo</text>
+</svg>

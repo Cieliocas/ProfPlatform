@@ -5,8 +5,19 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 const books = [
+  {
+    id: "vol07",
+    title: "Sequências Didáticas para o Ensino Médio",
+    subtitle: "Metodologias Ativas - Volume 07",
+    fileName: "sequenciaVol07.pdf",
+    pdfUrl: "/uespi-books/sequenciaVol07.pdf",
+    coverUrl: "/uespi-books/covers/sequenciaVol07.pdf.png",
+    officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/296",
+    year: "2026",
+  },
   {
     id: "bonus",
     title: "Epigenética e Doenças Crônicas Não Transmissíveis",
@@ -15,15 +26,7 @@ const books = [
     pdfUrl: "/uespi-books/sequenciaBonus.pdf",
     coverUrl: "/uespi-books/covers/sequenciaBonus.pdf.png",
     officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/233",
-  },
-  {
-    id: "vol05",
-    title: "Sequências Didáticas para o Ensino Médio",
-    subtitle: "Metodologias Ativas - Volume 05",
-    fileName: "sequenciaVol05.pdf",
-    pdfUrl: "/uespi-books/sequenciaVol05.pdf",
-    coverUrl: "/uespi-books/covers/sequenciaVol05.pdf.png",
-    officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/180",
+    year: "2025",
   },
   {
     id: "vol06",
@@ -33,15 +36,17 @@ const books = [
     pdfUrl: "/uespi-books/sequenciaVol06.pdf",
     coverUrl: "/uespi-books/covers/sequenciaVol06.pdf.png",
     officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/181",
+    year: "2024",
   },
   {
-    id: "vol07",
+    id: "vol05",
     title: "Sequências Didáticas para o Ensino Médio",
-    subtitle: "Metodologias Ativas - Volume 07",
-    fileName: "sequenciaVol07.pdf",
-    pdfUrl: "/uespi-books/sequenciaVol07.pdf",
-    coverUrl: "/uespi-books/covers/sequenciaVol07.pdf.png",
-    officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/296",
+    subtitle: "Metodologias Ativas - Volume 05",
+    fileName: "sequenciaVol05.pdf",
+    pdfUrl: "/uespi-books/sequenciaVol05.pdf",
+    coverUrl: "/uespi-books/covers/sequenciaVol05.pdf.png",
+    officialUrl: "https://editora.uespi.br/index.php/editora/catalog/book/180",
+    year: "2024",
   },
 ]
 
@@ -69,18 +74,40 @@ export default function LivrosUespiPage() {
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
             {books.map((book) => (
               <Card key={book.id} className="overflow-hidden rounded-2xl border-border bg-white py-0 shadow-sm">
-                <div className="relative aspect-[3/4] w-full bg-secondary">
-                  <Image
-                    src={book.coverUrl}
-                    alt={`Capa do livro ${book.title}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
-                    priority={book.id === "bonus"}
-                  />
-                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="relative aspect-[3/4] w-full bg-secondary text-left">
+                      <Image
+                        src={book.coverUrl}
+                        alt={`Capa do livro ${book.title}`}
+                        fill
+                        className="object-cover transition-transform duration-200 hover:scale-[1.02]"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw"
+                        priority={book.id === "vol07"}
+                      />
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl">
+                    <DialogHeader>
+                      <DialogTitle>{book.title}</DialogTitle>
+                      <DialogDescription>
+                        {book.subtitle} • {book.year}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-lg border">
+                      <Image
+                        src={book.coverUrl}
+                        alt={`Preview da capa do livro ${book.title}`}
+                        fill
+                        className="object-contain"
+                        sizes="(max-width: 768px) 90vw, 480px"
+                      />
+                    </div>
+                  </DialogContent>
+                </Dialog>
 
                 <CardHeader className="px-4 pt-4 pb-0">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-moss">Edição {book.year}</p>
                   <CardTitle className="text-base leading-tight text-navy">
                     {book.title}
                   </CardTitle>

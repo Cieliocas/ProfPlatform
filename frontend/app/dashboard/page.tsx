@@ -18,6 +18,7 @@ import {
 import { highSchoolYears, biologyAxes, interconnectOptions, experiences as mockExperiences } from "@/src/lib/mock-data"
 import { PageLoader } from "@/components/ui/page-loader"
 import { experienceService } from "@/src/services/experienceService"
+import { getDemoPosts } from "@/src/lib/demo-posts"
 
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
@@ -36,6 +37,8 @@ export default function DashboardPage() {
         const apiExps = await experienceService.fetchExperiences()
         if (!active) return
 
+        const localDemo = getDemoPosts()
+
         if (Array.isArray(apiExps) && apiExps.length > 0) {
           const byTitle = new Map<string, any>()
           apiExps.forEach((exp: any) => {
@@ -46,14 +49,19 @@ export default function DashboardPage() {
             const key = String(exp.title || "").trim().toLowerCase()
             if (!byTitle.has(key)) byTitle.set(key, exp)
           })
+          localDemo.forEach((exp: any) => {
+            const key = String(exp.title || "").trim().toLowerCase()
+            byTitle.set(key, exp)
+          })
           setExperiences(Array.from(byTitle.values()))
           return
         }
 
-        setExperiences(mockExperiences)
+        setExperiences([...localDemo, ...mockExperiences])
       } catch (error) {
         if (!active) return
-        setExperiences(mockExperiences)
+        const localDemo = getDemoPosts()
+        setExperiences([...localDemo, ...mockExperiences])
       } finally {
         if (active) setLoading(false)
       }

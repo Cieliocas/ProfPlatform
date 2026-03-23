@@ -22,8 +22,11 @@ import { AttachmentUploader } from "./attachment-uploader"
 import { AttachmentResponse } from "@/src/services/uploadService"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import { useAuth } from "@/src/contexts/AuthContext"
+import { addDemoPost } from "@/src/lib/demo-posts"
 
 export function NewExperienceForm() {
+  const { user } = useAuth()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [classification, setClassification] = useState("")
@@ -59,7 +62,7 @@ export function NewExperienceForm() {
     e.preventDefault()
     setIsSubmitting(true)
     try {
-      await experienceService.createExperience({
+      const payload = {
         title,
         content,
         classification,
@@ -67,7 +70,9 @@ export function NewExperienceForm() {
         steps,
         tags: selectedTags,
         attachments: attachments,
-      })
+      }
+
+      await experienceService.createExperience(payload)
       setSubmitted(true)
       toast.success("Sequência didática criada com sucesso!")
     } catch (error: any) {
@@ -82,7 +87,32 @@ export function NewExperienceForm() {
         errMessage = errorData
       }
 
-      toast.error(`Falha na API: ${errMessage}`)
+      // Modo demonstracao: se a API falhar, salva localmente para nao quebrar o tour da apresentacao.
+      const demoPost = {
+        id: `demo-${Date.now()}`,
+        title,
+        content,
+        classification,
+        discipline,
+        steps,
+        tags: selectedTags,
+        attachments,
+        upvotes: 0,
+        savedCount: 0,
+        appliedCount: 0,
+        createdAt: new Date().toISOString(),
+        author: {
+          id: String(user?.id || "0"),
+          name: user?.name || "Professor(a) do demo",
+          bio: user?.bio || "",
+          avatarUrl: "",
+          experienceCount: 0,
+        },
+        author_id: user?.id || 0,
+      }
+      addDemoPost(demoPost)
+      setSubmitted(true)
+      toast.warning(`API indisponível (${errMessage}). Post salvo em modo demonstração.`)
     } finally {
       setIsSubmitting(false)
     }

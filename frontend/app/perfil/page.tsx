@@ -8,6 +8,7 @@ import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
 import { Loader2 } from "lucide-react"
 import { experiences as mockExperiences } from "@/src/lib/mock-data"
+import { getDemoPosts } from "@/src/lib/demo-posts"
 
 export default function ProfilePage() {
   const { user, isLoading: authLoading } = useAuth()
@@ -18,24 +19,26 @@ export default function ProfilePage() {
     if (user) {
       experienceService.fetchExperiences(user.id)
         .then((data: any[]) => {
+          const demoLocal = getDemoPosts().filter((exp: any) => String(exp.author?.id) === String(user.id))
           if (Array.isArray(data)) {
             // O backend já filtra pelo author_id, mas deixamos proteção extra
             const myExps = data.filter((e: any) => String(e.author_id) === String(user.id))
             if (myExps.length > 0) {
-              setExperiences(myExps)
+              setExperiences([...demoLocal, ...myExps])
               return
             }
             const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
-            setExperiences(fallback)
+            setExperiences([...demoLocal, ...fallback])
           } else {
             const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
-            setExperiences(fallback)
+            setExperiences([...demoLocal, ...fallback])
           }
         })
         .catch((err: any) => {
           console.error("Error fetching experiences:", err)
+          const demoLocal = getDemoPosts().filter((exp: any) => String(exp.author?.id) === String(user.id))
           const fallback = mockExperiences.filter((exp) => String(exp.author?.id) === String(user.id))
-          setExperiences(fallback)
+          setExperiences([...demoLocal, ...fallback])
         })
         .finally(() => setLoadingExp(false))
     } else if (!authLoading) {

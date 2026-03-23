@@ -13,7 +13,8 @@ import {
   FileText,
   FileLineChart,
   Image as ImageIcon,
-  Link2
+  Link2,
+  Trash2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -82,6 +83,8 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
   }, [experience.comments])
 
   const [comments, setComments] = useState<any[]>(initialComments)
+  const canDeleteByName = (authorName: string) =>
+    Boolean(user?.name && authorName && user.name.trim().toLowerCase() === authorName.trim().toLowerCase())
 
   const steps = Array.isArray(experience.steps) && experience.steps.length > 0
     ? experience.steps
@@ -120,6 +123,20 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
         ? { ...c, replies: [...(c.replies || []), newReply] }
         : c
     )))
+  }
+
+  const handleDeleteComment = (commentId: number) => {
+    setComments((prev) => prev.filter((c) => c.id !== commentId))
+  }
+
+  const handleDeleteReply = (commentId: number, replyId: number) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.id === commentId
+          ? { ...c, replies: (c.replies || []).filter((r: any) => r.id !== replyId) }
+          : c
+      )
+    )
   }
 
   return (
@@ -357,6 +374,16 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
                               year: "numeric",
                             })}
                           </span>
+                          {canDeleteByName(c.authorName) && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteComment(c.id)}
+                              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              Excluir
+                            </button>
+                          )}
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">{c.text}</p>
 
@@ -392,6 +419,16 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
                                           year: "numeric",
                                         })}
                                       </span>
+                                      {canDeleteByName(r.authorName) && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteReply(c.id, r.id)}
+                                          className="inline-flex items-center gap-1 text-[10px] text-muted-foreground hover:text-destructive"
+                                        >
+                                          <Trash2 className="h-3 w-3" />
+                                          Excluir
+                                        </button>
+                                      )}
                                     </div>
                                     <p className="mt-1 text-xs text-muted-foreground">{r.text}</p>
                                   </div>

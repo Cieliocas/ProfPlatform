@@ -9,13 +9,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { authService } from "@/src/services/authService"
 import { User } from "@/src/types/auth"
 
 interface PublicProfileDialogProps {
     authorId: string | number
     authorName: string // Used before data loads
+    authorAvatarUrl?: string
     children: React.ReactNode // The trigger element (e.g. the Link or Button)
 }
 
@@ -28,7 +29,7 @@ function getInitials(name: string) {
         .toUpperCase()
 }
 
-export function PublicProfileDialog({ authorId, authorName, children }: PublicProfileDialogProps) {
+export function PublicProfileDialog({ authorId, authorName, authorAvatarUrl, children }: PublicProfileDialogProps) {
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState<User | null>(null)
     const [loading, setLoading] = useState(false)
@@ -56,6 +57,7 @@ export function PublicProfileDialog({ authorId, authorName, children }: PublicPr
 
                 <div className="flex flex-col items-center justify-center text-center">
                     <Avatar className="h-20 w-20 border-2 border-moss/20 mb-4">
+                        <AvatarImage src={authorAvatarUrl} alt={profile?.name || authorName} />
                         <AvatarFallback className="bg-moss/10 text-xl font-bold text-moss">
                             {getInitials(profile?.name || authorName)}
                         </AvatarFallback>

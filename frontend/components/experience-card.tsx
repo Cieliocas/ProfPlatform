@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ThumbsUp, Bookmark, Trash2, FileType, FileText, FileLineChart, Image as ImageIcon, Link2, Clock } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,6 +40,7 @@ export function ExperienceCard({ experience }: { experience: any }) {
   const authorId = experience.author_id || experience.author?.id
   const isOwner = user?.id === authorId
   const authorName = experience.author?.name || "Usuário do Sistema"
+  const authorAvatarUrl = experience.author?.avatarUrl || experience.author?.avatar_url || ""
 
   const [isDeleting, setIsDeleting] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -97,9 +98,10 @@ export function ExperienceCard({ experience }: { experience: any }) {
               </Badge>
             )}
           </div>
-          <PublicProfileDialog authorId={authorId} authorName={authorName}>
+          <PublicProfileDialog authorId={authorId} authorName={authorName} authorAvatarUrl={authorAvatarUrl}>
             <div className="flex items-center gap-2 cursor-pointer">
               <Avatar className="h-8 w-8 border-2 border-moss/20 hover:border-moss/50 transition-colors">
+                <AvatarImage src={authorAvatarUrl} alt={authorName} />
                 <AvatarFallback className="bg-moss/10 text-xs font-semibold text-moss">
                   {getInitials(authorName)}
                 </AvatarFallback>

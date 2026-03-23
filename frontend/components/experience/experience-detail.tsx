@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
@@ -157,6 +157,7 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
         {/* Author info */}
         <div className="mt-6 flex items-center gap-4">
           <Avatar className="h-12 w-12 border-2 border-moss/20">
+            <AvatarImage src={experience.author?.avatarUrl || experience.author?.avatar_url || ""} alt={experience.author?.name} />
             <AvatarFallback className="bg-moss/10 text-sm font-semibold text-moss">
               {getInitials(experience.author.name)}
             </AvatarFallback>

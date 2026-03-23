@@ -54,7 +54,7 @@ export const authors: Author[] = [
     id: "1",
     name: "Suzianne Raquel Valadares Sales Sousa",
     bio: "Professora de Biologia no Ensino Medio, com foco em sequencias didaticas investigativas e educacao cientifica.",
-    avatarUrl: "",
+    avatarUrl: "/suzianne-photo.jpeg",
     experienceCount: 1,
   },
   {
@@ -77,6 +77,13 @@ export const authors: Author[] = [
     bio: "Professor de Biologia com atuacao em genetica, metodologias ativas e uso de IA no Ensino Medio.",
     avatarUrl: "",
     experienceCount: 2,
+  },
+  {
+    id: "5",
+    name: "Joelto Pires Messias",
+    bio: "Professor de Biologia com foco em educacao ambiental, consumo consciente e gestao sustentavel de residuos no Ensino Medio.",
+    avatarUrl: "",
+    experienceCount: 1,
   },
 ]
 
@@ -221,6 +228,28 @@ export const experiences: Experience[] = [
     appliedCount: 17,
     createdAt: "2026-03-16",
     author: authors[3],
+  },
+  {
+    id: "real-6",
+    title: "Consumo, redução e destino sustentáveis dos resíduos sólidos",
+    content:
+      "Sequencia didatica investigativa com foco em consumo consciente, reducao de residuos e destinacao sustentavel no contexto escolar e comunitario.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "Sequência didática - Consumo, redução e destino sustentáveis dos resíduos sólidos.pdf",
+        file_type: "pdf",
+        file_url: "/docs/Joelto_Pires_Messias_Consumo_Reducao_Destino_Residuos_Solidos.pdf",
+      },
+    ],
+    tags: ["Ecologia", "Terceira serie", "Interdisciplinar", "Sustentabilidade"],
+    upvotes: 26,
+    savedCount: 18,
+    appliedCount: 9,
+    createdAt: "2026-03-23",
+    author: authors[4],
   },
 ]
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowUpRight, BookMarked, GraduationCap, Leaf, Sparkles, Star } from "lucide-react"
+import { ArrowUpRight, BookMarked, GraduationCap, Leaf, Star } from "lucide-react"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Card } from "@/components/ui/card"
 import { useAuth } from "@/src/contexts/AuthContext"
@@ -11,7 +11,7 @@ const recommendedCards = [
   {
     id: "suzianne-sdi",
     type: "SDI da Suzianne",
-    title: "“QUEM É VOCÊ, BICHO?”",
+    title: "QUEM É VOCÊ, BICHO",
     summary:
       "Abstração do post real com foco em investigação, observação de campo e construção de hipóteses no Ensino Médio.",
     byline: "Prof. Suzianne Valadares",
@@ -23,7 +23,7 @@ const recommendedCards = [
   },
   {
     id: "joelto-ref",
-    type: "Referência de Professor",
+    type: "Prof recomendado",
     title: "Consumo, redução e destino sustentável dos resíduos sólidos",
     summary:
       "Exemplo de sequência didática com enfoque em sustentabilidade, consumo consciente e análise crítica do destino de resíduos.",
@@ -108,7 +108,7 @@ export function SuzianneSpotlight() {
           </div>
 
           <Carousel opts={{ align: "start", loop: true }} className="w-full">
-            <CarouselContent className="py-2">
+            <CarouselContent className="py-3">
               {recommendedCards.map((card) => {
                 const targetHref = card.requiresAuth && !user ? card.hrefLoggedOut : card.hrefLoggedIn
 
@@ -116,10 +116,10 @@ export function SuzianneSpotlight() {
                   <CarouselItem key={card.id} className="md:basis-1/2 xl:basis-1/3">
                     <Link
                       href={targetHref}
-                      className="group block h-full rounded-xl border border-border bg-[#FCFCFC] p-5 transition-all duration-200 hover:border-moss/35 hover:shadow-[0_14px_28px_-16px_rgba(10,90,82,0.55)]"
+                      className="group block h-full rounded-xl border border-border bg-[#FCFCFC] p-5 transition-all duration-200 hover:border-moss/35 hover:bg-white"
                     >
                       <div className="mb-3 flex items-center justify-between">
-                        <span className="rounded-full bg-moss/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-moss">
+                        <span className="inline-flex w-fit rounded-full bg-moss/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-widest text-moss">
                           {card.type}
                         </span>
                         {getIcon(card.icon)}

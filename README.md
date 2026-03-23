@@ -22,6 +22,7 @@ Este repositório contém frontend (Next.js) e backend (FastAPI), além da infra
 12. [Migrações de Banco](#12-migrações-de-banco)
 13. [Observações de Segurança](#13-observações-de-segurança)
 14. [Créditos](#14-créditos)
+15. [Atualizações Recentes](#15-atualizações-recentes)
 
 ---
 
@@ -59,11 +60,14 @@ O objetivo é apresentar um **MVP estável**, com funcionalidades suficientes pa
 - Filtros por séries (Primeira/Segunda/Terceira)
 - Filtros por eixo da Biologia
 - Filtros por conexões interdisciplinares
+- Aba dedicada **Livros UESPI** com capas, preview e links oficiais
 
 ### Interação
 - Comentários em cada SDI
 - Respostas do autor com selo "Autor"
 - Likes e salvos (frontend demo)
+- Carrossel de recomendações na home ("Conteúdo recomendado pela prof. suzianne")
+- Avatar da Prof. Suzianne aplicado no perfil e nos posts de autoria dela
 
 ---
 
@@ -72,6 +76,7 @@ O objetivo é apresentar um **MVP estável**, com funcionalidades suficientes pa
 **Framework:** Next.js (App Router)
 **Client-side:** React + Tailwind CSS + Radix UI (shadcn/ui)
 **Proxy seguro:** chamadas passam por `/api/proxy/...` para anexar token JWT armazenado em cookie HttpOnly.
+**Proteção de rotas:** arquivo `frontend/proxy.ts` (convenção atual do Next.js 16)
 
 ### Backend
 **API:** FastAPI (Python 3.11)
@@ -189,6 +194,11 @@ seed_mvp.py        # Script de seed com dados reais para demonstração
 ### Modo Apresentação
 No arquivo `backend/app/routes/auth.py`, o registro cria usuários com `is_verified=True` — dispensando confirmação de e-mail, facilitando o cadastro ao vivo durante a apresentação.
 
+### Fluidez de Navegação
+- Carregadores de rota com `loading.tsx` nas páginas principais
+- Loader visual padronizado em `PageLoader`
+- Transição sutil entre telas e rolagem suave para melhor experiência em demonstração
+
 ---
 
 ## 12) Migrações de Banco
@@ -221,3 +231,12 @@ Pesquisadora em metodologias investigativas para o Ensino Médio de Biologia
 ### Desenvolvimento técnico
 Franciélio Castro — Desenvolvedor Full Stack
 [github.com/Cieliocas](https://github.com/Cieliocas)
+
+---
+
+## 15) Atualizações Recentes
+- Navbar com abas centrais **Explorar** e **UESPI**, incluindo destaque da aba ativa
+- Aba **Livros UESPI** com acervo ordenado por recência (2026 → 2025 → 2024)
+- Home com bloco de idealização da Prof. Suzianne e vitrine de conteúdos recomendados
+- Inclusão de novos materiais reais no acervo e refinamento dos resumos/etapas dos posts
+- Migração técnica de `middleware.ts` para `proxy.ts` (compatível com Next.js 16+)

@@ -68,8 +68,7 @@ export function ExperienceCard({ experience }: { experience: any }) {
   const connectionTag = expTags.find((tag) => interconnectOptions.includes(tag))
   const displayTags = expTags.filter((tag) => tag !== connectionTag).slice(0, 3)
 
-  // Treat Title as Guiding Question (it is the main focus now)
-  const guidingQuestion = experience.title.endsWith("?") ? experience.title : `${experience.title}?`
+  const displayTitle = experience.title
 
   const savedCountBase = experience.savedCount ?? experience.saved_count ?? 0
   const appliedCountBase = experience.appliedCount ?? experience.applied_count ?? experience.upvotes ?? 0
@@ -115,7 +114,7 @@ export function ExperienceCard({ experience }: { experience: any }) {
         <div className="mb-6">
           <Link href={`/experiencia/${experience.id}`}>
             <h3 className="text-xl md:text-2xl font-bold leading-tight text-navy group-hover:text-moss transition-colors italic">
-              "{guidingQuestion}"
+              {displayTitle}
             </h3>
           </Link>
           <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">

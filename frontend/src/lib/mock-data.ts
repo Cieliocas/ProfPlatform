@@ -221,7 +221,7 @@ const cartilhaUrl = "https://github.com/Cieliocas/ProfPlatform/releases/download
 export const experiences: Experience[] = [
   {
     id: "real-0",
-    title: "“QUEM É VOCÊ, BICHO?”",
+    title: "QUEM É VOCÊ, BICHO",
     content:
       "Sequência didática sobre classificação animal e características morfofisiológicas dos filos, com protagonismo estudantil, ludicidade e aprendizagem leve no Ensino Médio.",
     classification: "Sequência didática investigativa",
@@ -297,7 +297,7 @@ export const experiences: Experience[] = [
   },
   {
     id: "real-2",
-    title: "OCEANO EM APUROS: QUEM É O CULPADO NESSA HISTÓRIA?",
+    title: "OCEANO EM APUROS: QUEM É O CULPADO NESSA HISTÓRIA",
     content:
       "Sequência didática que utiliza educomunicação e histórias em quadrinhos para abordar o ciclo do carbono e os impactos das mudanças climáticas nos oceanos.",
     classification: "Sequência didática investigativa",

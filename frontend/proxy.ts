@@ -7,7 +7,7 @@ const protectedRoutes = ['/dashboard', '/perfil', '/experiencia', '/minhas-sdis'
 // Mapeamento de rotas de auth (não deve acessar se já estiver logado logicamente, mas opcional redirecionar)
 const authRoutes = ['/login', '/cadastro']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const token = request.cookies.get('token')?.value
     const { pathname } = request.nextUrl
 

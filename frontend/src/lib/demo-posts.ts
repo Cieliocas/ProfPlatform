@@ -21,3 +21,8 @@ export function addDemoPost(post: any) {
   const posts = getDemoPosts()
   saveDemoPosts([post, ...posts])
 }
+
+export function removeDemoPost(postId: string) {
+  const posts = getDemoPosts()
+  saveDemoPosts(posts.filter((post: any) => String(post.id) !== String(postId)))
+}

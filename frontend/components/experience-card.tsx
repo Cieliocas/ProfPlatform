@@ -21,6 +21,7 @@ import { toast } from "sonner"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
 import { interconnectOptions } from "@/src/lib/mock-data"
+import { removeDemoPost } from "@/src/lib/demo-posts"
 
 import { PublicProfileDialog } from "./profile/public-profile-dialog"
 import { DownloadPreviewDialog } from "./experience/download-preview-dialog"
@@ -50,9 +51,19 @@ export function ExperienceCard({ experience }: { experience: any }) {
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      if (typeof experience.id === 'string' || typeof experience.id === 'number') {
-        await experienceService.deleteExperience(Number(experience.id))
+      const rawId = experience.id
+      const isDemoPost = typeof rawId === "string" && rawId.startsWith("demo-")
+
+      if (isDemoPost) {
+        removeDemoPost(rawId)
+      } else {
+        const numericId = Number(rawId)
+        if (!Number.isFinite(numericId)) {
+          throw new Error("ID de publicação inválido para exclusão")
+        }
+        await experienceService.deleteExperience(numericId)
       }
+
       toast.success("Sequência didática deletada com sucesso.")
       window.location.reload()
     } catch (e) {

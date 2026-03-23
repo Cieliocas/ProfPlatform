@@ -20,7 +20,7 @@ export default function ProfilePage() {
         .then((data: any[]) => {
           if (Array.isArray(data)) {
             // O backend já filtra pelo author_id, mas deixamos proteção extra
-            const myExps = data.filter((e: any) => e.author_id === user.id)
+            const myExps = data.filter((e: any) => String(e.author_id) === String(user.id))
             if (myExps.length > 0) {
               setExperiences(myExps)
               return

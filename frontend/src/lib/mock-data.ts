@@ -49,206 +49,192 @@ export interface Attachment {
   file_url: string
 }
 
-const authorSeeds = [
-  { name: "Suzianne Valadares", bio: "Professora de Biologia com foco em sequencias didaticas investigativas no Ensino Medio." },
-  { name: "Carlos Eduardo Santos", bio: "Professor de Biologia celular e investigador de metodologias ativas." },
-  { name: "Maria Lucia Ferreira", bio: "Atua com genetica e biotecnologia no Ensino Medio." },
-  { name: "Roberto Almeida", bio: "Especialista em zoologia e conservacao da fauna local." },
-  { name: "Juliana Mendes", bio: "Apaixonada por citologia e cultura maker em laboratorios escolares." },
-  { name: "Fernanda Duarte", bio: "Docente de botânica e estudos de biodiversidade." },
-  { name: "Rafael Costa", bio: "Professor de fisiologia humana e saude preventiva." },
-  { name: "Camila Ribeiro", bio: "Pesquisa sobre microbiologia e educacao cientifica." },
-  { name: "Thiago Martins", bio: "Atua com genetica de populacoes e estudos de caso." },
-  { name: "Larissa Nogueira", bio: "Coordena projetos interdisciplinares em Biologia e Quimica." },
-  { name: "Patricia Gomes", bio: "Trabalha com sustentabilidade e educacao ambiental." },
-  { name: "Diego Araujo", bio: "Professor de biologia marinha e ecossistemas costeiros." },
-  { name: "Renata Campos", bio: "Foco em evolucao e biodiversidade regional." },
-  { name: "Marcos Vinicius Rocha", bio: "Pesquisa sobre bioindicadores e qualidade da agua." },
-  { name: "Livia Medeiros", bio: "Coordena projetos de investigacao em escolas publicas." },
+export const authors: Author[] = [
+  {
+    id: "1",
+    name: "Suzianne Raquel Valadares Sales Sousa",
+    bio: "Professora de Biologia no Ensino Medio, com foco em sequencias didaticas investigativas e educacao cientifica.",
+    avatarUrl: "",
+    experienceCount: 1,
+  },
+  {
+    id: "2",
+    name: "Samara Oliveira da Silva",
+    bio: "Professora de Biologia no Ensino Medio, com foco em educacao ambiental e investigacao cientifica.",
+    avatarUrl: "",
+    experienceCount: 2,
+  },
+  {
+    id: "3",
+    name: "Shirley de Sousa Brito",
+    bio: "Professora de Biologia com enfase em sustentabilidade e seguranca alimentar no ambiente escolar.",
+    avatarUrl: "",
+    experienceCount: 1,
+  },
+  {
+    id: "4",
+    name: "Roberth Cipriano",
+    bio: "Professor de Biologia com atuacao em genetica, metodologias ativas e uso de IA no Ensino Medio.",
+    avatarUrl: "",
+    experienceCount: 2,
+  },
 ]
 
-export const authors: Author[] = authorSeeds.map((author, index) => ({
-  id: String(index + 1),
-  name: author.name,
-  bio: author.bio,
-  avatarUrl: "",
-  experienceCount: 3,
-}))
-
-const stepSets: ExperienceStep[][] = [
-  [
-    { title: "Problematizacao", description: "Contextualize o tema e levante questoes iniciais." },
-    { title: "Hipotese", description: "Organize as ideias e formule hipoteses em grupo." },
-    { title: "Coleta de Dados", description: "Planeje e realize a coleta com instrumentos simples." },
-    { title: "Conclusao", description: "Compare resultados e registre evidencias." },
-  ],
-  [
-    { title: "Observacao Inicial", description: "Mapeie o problema biologico no entorno." },
-    { title: "Planejamento", description: "Defina variaveis e criterios de analise." },
-    { title: "Monitoramento", description: "Colete dados periodicamente." },
-    { title: "Analise", description: "Organize dados e compare com a literatura." },
-    { title: "Compartilhamento", description: "Socialize conclusoes em formato de seminario." },
-  ],
-  [
-    { title: "Questao Norteadora", description: "Apresente o desafio central aos estudantes." },
-    { title: "Investigacao", description: "Divida tarefas e realize experimentos." },
-    { title: "Sintese", description: "Construa mapas conceituais e relatorios." },
-    { title: "Aplicacao", description: "Transfira o aprendizado para novos cenarios." },
-  ],
+const defaultSteps: ExperienceStep[] = [
+  { title: "Problematizacao", description: "Introducao ao problema investigativo e contextualizacao biologica." },
+  { title: "Hipotese", description: "Levantamento de hipoteses com base em dados e observacoes iniciais." },
+  { title: "Coleta de Dados", description: "Registro das evidencias produzidas durante a sequencia didatica." },
+  { title: "Conclusao", description: "Analise final dos resultados e socializacao das descobertas." },
 ]
 
-const titles = [
-  "Como a biodiversidade local responde a areas urbanizadas?",
-  "Quais fatores alteram a taxa de germinacao das sementes?",
-  "Como a poluicao impacta os bioindicadores aquaticos?",
-  "Como as mudancas climaticas afetam os polinizadores locais?",
-  "O que muda na fotossintese quando variamos luz e agua?",
-  "Como o uso do solo influencia a fauna do entorno escolar?",
-  "Por que as doencas respiratorias aumentam em periodos secos?",
-  "Como o microbioma do solo varia em hortas escolares?",
-  "Quais evidencias indicam adaptacoes em ambientes urbanos?",
-  "Como a qualidade da agua interfere na cadeia alimentar?",
-  "O que determina o sucesso reprodutivo de plantas nativas?",
-  "Como o lixo urbano afeta a vida marinha costeira?",
-  "Quais fatores influenciam o comportamento de insetos?",
-  "Como a genetica de populacoes aparece em estudos locais?",
-  "Qual o impacto do desmatamento na biodiversidade?",
-]
+const cartilhaUrl = "https://github.com/Cieliocas/ProfPlatform/releases/download/v1.0-mvp/Cartilha_Aulas_Praticas_Biologia_IA.pdf"
 
-const axisTags = ["Ecologia", "Genetica", "Citologia", "Zoologia", "Botanica", "Fisiologia"]
-const yearTags = ["Primeira série", "Segunda série", "Terceira série"]
-const connections = ["Quimica", "Geografia", "Matematica", "Historia"]
-
-const attachmentPool: Attachment[] = [
-  { file_name: "roteiro_investigacao.pdf", file_type: "pdf", file_url: "/mock/roteiro_investigacao.pdf" },
-  { file_name: "sequencia_polinizadores.pdf", file_type: "pdf", file_url: "/mock/sequencia_polinizadores.pdf" },
-  { file_name: "relatorio_ecossistema.pdf", file_type: "pdf", file_url: "/mock/relatorio_ecossistema.pdf" },
-  { file_name: "mapa_campo.jpg", file_type: "jpg", file_url: "/mock/mapa_campo.jpg" },
-  { file_name: "https://dados.biodiversidade.gov.br", file_type: "link", file_url: "https://dados.biodiversidade.gov.br" },
-]
-
-const commentSets = [
-  [
-    {
-      id: 1,
-      authorName: "Livia Medeiros",
-      createdAt: "2026-03-05",
-      text: "Adorei a sequencia. Como voce conduziu a etapa de hipotese com a turma do 1o ano?",
-      replies: [
-        {
-          id: 11,
-          authorName: "Ana Beatriz Silva",
-          createdAt: "2026-03-06",
-          text: "Usei fichas guiadas e exemplos locais para ajudar na formulacao das hipoteses."
-        }
-      ]
-    },
-    {
-      id: 2,
-      authorName: "Rafael Costa",
-      createdAt: "2026-03-07",
-      text: "Os dados ficaram bem ricos. Voce recomendaria repetir a coleta por mais semanas?",
-    }
-  ],
-  [
-    {
-      id: 3,
-      authorName: "Camila Ribeiro",
-      createdAt: "2026-03-02",
-      text: "Usei a proposta com meus alunos e eles se engajaram muito.",
-      replies: [
-        {
-          id: 12,
-          authorName: "Roberto Almeida",
-          createdAt: "2026-03-03",
-          text: "Que bom! Se quiser, posso compartilhar a rubrica de avaliacao que usei."
-        }
-      ]
-    }
-  ],
-  [
-    {
-      id: 4,
-      authorName: "Patricia Gomes",
-      createdAt: "2026-03-01",
-      text: "Sugiro incluir um momento de devolutiva para a comunidade escolar.",
-      replies: [
-        {
-          id: 13,
-          authorName: "Juliana Mendes",
-          createdAt: "2026-03-02",
-          text: "Boa ideia. Estou planejando um mural de resultados com os estudantes."
-        }
-      ]
-    }
-  ],
-]
-
-const createExperience = (author: Author, index: number, variant: number): Experience => {
-  const axis = axisTags[index % axisTags.length]
-  const year = yearTags[(index + variant) % yearTags.length]
-  const connection = connections[(index + variant) % connections.length]
-  const baseTitle = titles[(index + variant) % titles.length]
-  const steps = stepSets[(index + variant) % stepSets.length]
-  const attachments = [
-    attachmentPool[(index + variant) % attachmentPool.length],
-    attachmentPool[(index + variant + 2) % attachmentPool.length],
-  ]
-
-  const baseComments = (index + variant) % 4 === 0 ? commentSets[(index + variant) % commentSets.length] : undefined
-  const comments = baseComments
-    ? baseComments.map((comment) => ({
-      ...comment,
-      replies: comment.replies
-        ? comment.replies.map((reply) => ({ ...reply, authorName: author.name }))
-        : comment.replies
-    }))
-    : undefined
-
-  return {
-    id: `${index + 1}-${variant + 1}`,
-    title: baseTitle,
+export const experiences: Experience[] = [
+  {
+    id: "real-0",
+    title: "“QUEM É VOCÊ, BICHO?”",
     content:
-      "Esta sequencia didatica investigativa foi estruturada para aproximar os estudantes do metodo cientifico. " +
-      "Inclui levantamento de dados locais, discussao em grupo e producao de registros. " +
-      "A proposta pode ser adaptada conforme o tempo disponivel e o contexto da turma.",
+      "Sequencia didatica investigativa de referencia para o Ensino Medio, com foco na identificacao biologica, observacao sistematica e construcao de argumentos cientificos.",
     classification: "Sequência didática investigativa",
     discipline: "Biologia",
-    steps,
-    attachments,
-    tags: [axis, year, "Interdisciplinar", connection],
-    upvotes: 18 + ((index + 1) * (variant + 2)) % 40,
-    savedCount: 10 + ((index + 2) * (variant + 3)) % 35,
-    appliedCount: 4 + ((index + 3) * (variant + 4)) % 12,
-    createdAt: `2026-02-${String(10 + ((index + variant) % 18)).padStart(2, "0")}`,
-    author,
-    comments,
-  }
-}
-
-export const experiences: Experience[] = authors.flatMap((author, index) => {
-  return [0, 1, 2].map((variant) => createExperience(author, index, variant))
-})
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "Suzianne Raquel Valadares Sales Sousa - corrigido e enviado (2).pdf",
+        file_type: "pdf",
+        file_url: "/docs/Suzianne_Raquel_Valadares_Sales_Sousa_corrigido_e_enviado_2.pdf",
+      },
+    ],
+    tags: ["Ecologia", "Primeira serie", "Interdisciplinar", "Geografia"],
+    upvotes: 58,
+    savedCount: 44,
+    appliedCount: 23,
+    createdAt: "2026-03-23",
+    author: authors[0],
+  },
+  {
+    id: "real-1",
+    title: "LUZ, CÂMERA E AÇÃO NA LAGOA: O OLHAR SOB A PERSPECTIVA DA EDUCAÇÃO AMBIENTAL CRÍTICA",
+    content:
+      "Sequencia didatica investigativa com foco em educacao ambiental critica. A proposta envolve observacao de campo, analise de impactos e discussao de intervencoes locais.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "Planejamento AASA (Samara) Final.pdf",
+        file_type: "pdf",
+        file_url: "/docs/Planejamento_AASA_Samara.pdf",
+      },
+    ],
+    tags: ["Ecologia", "Segunda serie", "Interdisciplinar", "Geografia"],
+    upvotes: 42,
+    savedCount: 28,
+    appliedCount: 16,
+    createdAt: "2026-03-20",
+    author: authors[1],
+  },
+  {
+    id: "real-2",
+    title: "OCEANO EM APUROS: QUEM É O CULPADO NESSA HISTÓRIA?",
+    content:
+      "Sequencia didatica sobre poluicao marinha e impactos ecologicos. Os estudantes investigam causas, efeitos e responsabilidades a partir de dados e fontes cientificas.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "Oceano em apuros.pdf",
+        file_type: "pdf",
+        file_url: "/docs/Oceano_em_Apuros.pdf",
+      },
+    ],
+    tags: ["Ecologia", "Terceira serie", "Interdisciplinar", "Quimica"],
+    upvotes: 37,
+    savedCount: 25,
+    appliedCount: 13,
+    createdAt: "2026-03-19",
+    author: authors[1],
+  },
+  {
+    id: "real-3",
+    title: "Consciência e Ação: Estratégias para Reduzir o Desperdício de Alimentos na Escola",
+    content:
+      "Sequencia didatica investigativa sobre desperdicio de alimentos no contexto escolar, integrando Biologia e educacao ambiental.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "AASA_Shirley de Sousa Brito.docx",
+        file_type: "docx",
+        file_url: "/docs/AASA_Shirley_de_Sousa_Brito.docx",
+      },
+    ],
+    tags: ["Ecologia", "Segunda serie", "Interdisciplinar", "Sustentabilidade"],
+    upvotes: 33,
+    savedCount: 22,
+    appliedCount: 11,
+    createdAt: "2026-03-18",
+    author: authors[2],
+  },
+  {
+    id: "real-4",
+    title: "Aulas Práticas: Biologia com uso de IA no Ensino médio.",
+    content:
+      "Material didatico com propostas de aulas praticas e investigativas em Biologia, com apoio de ferramentas de IA para analise e comunicacao de dados.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "Cartilha de Aulas Práticas_Biologia com IA.pdf",
+        file_type: "pdf",
+        file_url: cartilhaUrl,
+      },
+    ],
+    tags: ["Genetica", "Primeira serie", "Interdisciplinar", "Matematica"],
+    upvotes: 48,
+    savedCount: 34,
+    appliedCount: 19,
+    createdAt: "2026-03-17",
+    author: authors[3],
+  },
+  {
+    id: "real-5",
+    title: "DESVENDANDO OS MISTÉRIOS GENÉTICOS: APRENDIZAGEM DE MÁQUINAS E LIGAÇÕES MNEMÔNICAS NO ENSINO DA GENÉTICA.",
+    content:
+      "Sequencia didatica investigativa em Genetica com articulacao entre aprendizagem de maquinas, recursos mnemotecnicos e investigacao de conceitos no Ensino Medio.",
+    classification: "Sequência didática investigativa",
+    discipline: "Biologia",
+    steps: defaultSteps,
+    attachments: [
+      {
+        file_name: "BSA_APRESENTAÇÃO AASA_PROF ROBERTH, TURMA 06, 2024.pdf",
+        file_type: "pdf",
+        file_url: "/docs/BSA_Apresentacao_AASA_Prof_Roberth.pdf",
+      },
+    ],
+    tags: ["Genetica", "Segunda serie", "Interdisciplinar", "Tecnologia"],
+    upvotes: 45,
+    savedCount: 31,
+    appliedCount: 17,
+    createdAt: "2026-03-16",
+    author: authors[3],
+  },
+]
 
 export const allTags = [
   "Ecologia",
   "Genetica",
-  "Citologia",
-  "Zoologia",
-  "Botanica",
-  "Fisiologia",
   "Interdisciplinar",
-  "Microbiologia",
-  "Bioindicadores",
-  "Metodo Cientifico",
-  "Saude",
   "Sustentabilidade",
-  "Comunidade",
+  "Tecnologia",
+  "Matematica",
 ]
 
 export const classifications = [
   "Sequência didática investigativa",
-  "Sequência didática",
   "Informação",
 ]
 
@@ -257,23 +243,19 @@ export const disciplines = [
 ]
 
 export const highSchoolYears = [
-  "Primeira série",
-  "Segunda série",
-  "Terceira série",
+  "Primeira serie",
+  "Segunda serie",
+  "Terceira serie",
 ]
 
 export const biologyAxes = [
   "Ecologia",
   "Genetica",
-  "Citologia",
-  "Zoologia",
-  "Botanica",
-  "Fisiologia",
 ]
 
 export const interconnectOptions = [
   "Quimica",
   "Geografia",
   "Matematica",
-  "Historia",
+  "Tecnologia",
 ]

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
 import { Search, TrendingUp, Beaker } from "lucide-react"
 import { Navbar } from "@/components/navbar"
@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { experienceService } from "@/src/services/experienceService"
 import { highSchoolYears, biologyAxes, interconnectOptions, experiences as mockExperiences } from "@/src/lib/mock-data"
 import { PageLoader } from "@/components/ui/page-loader"
 
@@ -25,28 +24,8 @@ export default function DashboardPage() {
   const [selectedAxes, setSelectedAxes] = useState<string[]>([])
   const [selectedConnection, setSelectedConnection] = useState<string>("all")
 
-  const [experiences, setExperiences] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    experienceService.fetchExperiences()
-      .then((data: any[]) => {
-        if (Array.isArray(data) && data.length > 0) {
-          const merged = [
-            ...mockExperiences,
-            ...data.filter((exp: any) => !mockExperiences.some((mock) => String(mock.id) === String(exp.id))),
-          ]
-          setExperiences(merged)
-          return
-        }
-        setExperiences(mockExperiences)
-      })
-      .catch((err: any) => {
-        console.error(err)
-        setExperiences(mockExperiences)
-      })
-      .finally(() => setLoading(false))
-  }, [])
+  const [experiences] = useState<any[]>(mockExperiences)
+  const [loading] = useState(false)
 
   const normalize = (value: string) =>
     value

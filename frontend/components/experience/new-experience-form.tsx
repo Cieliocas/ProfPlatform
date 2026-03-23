@@ -112,7 +112,7 @@ export function NewExperienceForm() {
       }
       addDemoPost(demoPost)
       setSubmitted(true)
-      toast.warning(`API indisponível (${errMessage}). Post salvo em modo demonstração.`)
+      toast.success("Post salvo em modo apresentação. Você já pode continuar o tour.")
     } finally {
       setIsSubmitting(false)
     }

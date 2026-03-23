@@ -25,6 +25,9 @@ export function Footer() {
               <Link href="/dashboard" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
                 Explorar SDIs de Biologia
               </Link>
+              <Link href="/livros-uespi" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
+                Livros UESPI
+              </Link>
               <Link href="/experiencia/nova" className="text-sm text-primary-foreground/70 transition-colors hover:text-mustard">
                 Compartilhar SDI
               </Link>

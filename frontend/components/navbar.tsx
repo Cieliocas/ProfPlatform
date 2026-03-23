@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 
 const navLinks = [
   { href: "/minhas-sdis", label: "Minhas SDIs" },
+  { href: "/livros-uespi", label: "Livros UESPI" },
   { href: "/salvos", label: "Salvos" },
   { href: "/perfil", label: "Perfil" },
 ]

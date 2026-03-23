@@ -8,8 +8,9 @@ import { authService } from '../services/authService';
 interface AuthContextType {
     user: User | null;
     isLoading: boolean;
+    isLoggingOut: boolean;
     login: (token: string, userData: User) => void;
-    logout: () => void;
+    logout: () => Promise<void>;
     checkAuth: () => Promise<void>;
 }
 
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
     const router = useRouter();
 
     const checkAuth = async () => {
@@ -46,14 +48,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(userData);
     };
 
-    const logout = () => {
-        authService.logout();
-        setUser(null);
-        router.push('/login');
+    const logout = async () => {
+        setIsLoggingOut(true);
+        try {
+            await authService.logout();
+        } catch (error) {
+            console.error('Logout error', error);
+        } finally {
+            setUser(null);
+            router.replace('/');
+            router.refresh();
+            setIsLoggingOut(false);
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, isLoading, login, logout, checkAuth }}>
+        <AuthContext.Provider value={{ user, isLoading, isLoggingOut, login, logout, checkAuth }}>
             {children}
         </AuthContext.Provider>
     );

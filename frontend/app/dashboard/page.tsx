@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select"
 import { experienceService } from "@/src/services/experienceService"
 import { highSchoolYears, biologyAxes, interconnectOptions, experiences as mockExperiences } from "@/src/lib/mock-data"
+import { PageLoader } from "@/components/ui/page-loader"
 
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
@@ -190,7 +191,7 @@ export default function DashboardPage() {
               </div>
 
               {loading ? (
-                <div className="py-20 text-center text-muted-foreground">Carregando SDIs...</div>
+                <PageLoader label="Carregando SDIs..." />
               ) : filteredExperiences.length > 0 ? (
                 <div className="space-y-6">
                   {filteredExperiences.map((exp: any) => (

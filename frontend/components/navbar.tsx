@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
-import { Menu, X, User, LogIn, LogOut } from "lucide-react"
+import { Menu, LogIn, LogOut, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -16,7 +16,7 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
-  const { user, logout } = useAuth()
+  const { user, logout, isLoggingOut } = useAuth()
 
   const availableLinks = navLinks.filter(link => {
     // Esconde links protegidos se não estiver logado
@@ -47,9 +47,14 @@ export function Navbar() {
           {user ? (
             <div className="flex items-center gap-4">
               <span className="text-sm font-semibold text-foreground/80">Olá, {user.name.split(' ')[0]}</span>
-              <Button variant="ghost" size="sm" onClick={logout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Sair
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => { void logout() }}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
+                {isLoggingOut ? "Saindo..." : "Sair"}
               </Button>
             </div>
           ) : (
@@ -99,9 +104,16 @@ export function Navbar() {
                     <span className="px-4 py-2 text-sm font-medium text-foreground">
                       Conectado como: {user.name}
                     </span>
-                    <Button variant="outline" onClick={() => { logout(); setOpen(false); }}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sair
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setOpen(false)
+                        void logout()
+                      }}
+                      disabled={isLoggingOut}
+                    >
+                      {isLoggingOut ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogOut className="mr-2 h-4 w-4" />}
+                      {isLoggingOut ? "Saindo..." : "Sair"}
                     </Button>
                   </>
                 ) : (

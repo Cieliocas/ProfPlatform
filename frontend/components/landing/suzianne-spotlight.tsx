@@ -1,28 +1,30 @@
 "use client"
 
+import Link from "next/link"
 import Image from "next/image"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { Card } from "@/components/ui/card"
+import { useAuth } from "@/src/contexts/AuthContext"
 
 const demoPosts = [
   {
-    id: "suzianne-01",
-    title: "Investigação sobre biodiversidade urbana",
-    image: "/suzianne-demo/post-01.svg",
+    id: "suzianne-real",
+    title: "“QUEM É VOCÊ, BICHO?”",
+    subtitle: "Post real da Suzianne",
+    image: "/suzianne-demo/Suzianne_Raquel_Valadares_Sales_Sousa_corrigido_e_enviado_2.pdf.png",
   },
   {
-    id: "suzianne-02",
-    title: "Genética aplicada ao cotidiano",
+    id: "suzianne-demo",
+    title: "Abstração visual de sequência didática",
+    subtitle: "Demonstração de post",
     image: "/suzianne-demo/post-02.svg",
-  },
-  {
-    id: "suzianne-03",
-    title: "Ecologia e análise de impacto local",
-    image: "/suzianne-demo/post-03.svg",
   },
 ]
 
 export function SuzianneSpotlight() {
+  const { user } = useAuth()
+  const postTargetUrl = user ? "/experiencia/real-0" : "/login"
+
   return (
     <section className="bg-[#F8FAFC] py-16">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-12 lg:px-8">
@@ -50,7 +52,7 @@ export function SuzianneSpotlight() {
             <p className="text-xs font-semibold uppercase tracking-widest text-moss">Demonstração visual</p>
             <h3 className="mt-1 text-2xl font-bold text-navy">Exemplos de posts da Suzianne</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Carrossel ilustrativo para apresentação do acervo. Conteúdo apenas visual.
+              Passe o mouse para destacar. Ao clicar, você acessa o post original (ou a tela de login, se não estiver autenticado).
             </p>
           </div>
 
@@ -58,20 +60,24 @@ export function SuzianneSpotlight() {
             <CarouselContent>
               {demoPosts.map((post) => (
                 <CarouselItem key={post.id} className="md:basis-1/2">
-                  <div className="overflow-hidden rounded-xl border border-border bg-secondary">
+                  <Link
+                    href={postTargetUrl}
+                    className="group block overflow-hidden rounded-xl border border-border bg-secondary transition-all hover:-translate-y-1 hover:shadow-lg"
+                  >
                     <div className="relative aspect-[4/5] w-full">
                       <Image
                         src={post.image}
                         alt={post.title}
                         fill
-                        className="object-cover"
+                        className="object-cover transition-transform duration-300 group-hover:scale-[1.04]"
                         sizes="(max-width: 768px) 100vw, 40vw"
                       />
                     </div>
                     <div className="border-t border-border bg-white px-4 py-3">
                       <p className="text-sm font-semibold text-navy">{post.title}</p>
+                      <p className="text-xs text-muted-foreground">{post.subtitle}</p>
                     </div>
-                  </div>
+                  </Link>
                 </CarouselItem>
               ))}
             </CarouselContent>

@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import { Menu, LogIn, LogOut, Loader2, ChevronDown, User, Bookmark, LibraryBig, Compass } from "lucide-react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -23,6 +24,14 @@ const primaryLinks = [
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { user, logout, isLoggingOut } = useAuth()
+  const pathname = usePathname()
+
+  const isLinkActive = (href: string) => {
+    if (href === "/dashboard") {
+      return pathname === "/dashboard" || pathname.startsWith("/experiencia/")
+    }
+    return pathname === href
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-card/80 backdrop-blur-md">
@@ -36,7 +45,11 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-md px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+                isLinkActive(link.href)
+                  ? "bg-mustard text-navy"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
             >
               {link.label}
             </Link>
@@ -46,12 +59,6 @@ export function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
           {user ? (
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/minhas-sdis">
-                  <LibraryBig className="mr-2 h-4 w-4" />
-                  Minhas SDIs
-                </Link>
-              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm">
@@ -124,7 +131,11 @@ export function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="rounded-md px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    className={`rounded-md px-4 py-3 text-sm font-medium transition-colors ${
+                      isLinkActive(link.href)
+                        ? "bg-mustard text-navy"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    }`}
                     onClick={() => setOpen(false)}
                   >
                     {link.label === "Explorar" ? <Compass className="mr-2 inline h-4 w-4" /> : <LibraryBig className="mr-2 inline h-4 w-4" />}

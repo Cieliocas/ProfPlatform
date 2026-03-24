@@ -17,14 +17,12 @@ export function Hero() {
           </div>
 
           <h1 className="max-w-4xl text-balance text-4xl font-bold leading-tight tracking-tight text-primary-foreground md:text-5xl lg:text-6xl">
-            Compartilhe suas Sequencias Didaticas Investigativas.{" "}
-            <span className="text-mustard">Biologia em foco.</span>
+            Entre, explore e compartilhe:{" "}
+            <span className="text-mustard">a educação ativa começa com você.</span>
           </h1>
 
           <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-primary-foreground/70 md:text-xl">
-            Um espaco dedicado a professores de Biologia para trocar sequencias
-            didaticas, investigar problemas reais e aplicar o metodo cientifico
-            no Ensino Medio.
+            Bioativa: conectando professores, ideias e investigação.
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">

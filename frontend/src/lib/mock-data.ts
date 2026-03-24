@@ -243,13 +243,13 @@ export const experiences: Experience[] = [
     comments: [
       {
         id: 1001,
-        authorName: "Roberth Cipriano",
+        authorName: "Prof. Caio Mendes",
         createdAt: "2026-03-21T10:20:00.000Z",
         text: "Adorei a ludicidade do jogo 'Quem é você, bicho?'. No meu trabalho com Genética, usei IA para classificar imagens; você acha que daria para integrar uma etapa onde os alunos treinam uma IA para reconhecer os filos que pesquisaram?",
         replies: [
           {
             id: 1002,
-            authorName: "Suzianne Raquel Valadares Sales Sousa",
+            authorName: "Profa. Helena Ramos",
             createdAt: "2026-03-21T11:05:00.000Z",
             text: "Com certeza! Integrar o reconhecimento de imagem da sua cartilha tornaria a etapa de pesquisa ainda mais tecnológica e alinhada com o interesse atual dos alunos.",
           },
@@ -281,13 +281,13 @@ export const experiences: Experience[] = [
     comments: [
       {
         id: 1101,
-        authorName: "Shirley de Sousa Brito",
+        authorName: "Profa. Marina Duarte",
         createdAt: "2026-03-20T14:15:00.000Z",
         text: "Excelente uso do documentário! Na minha prática com desperdício de alimentos, notei que o registro visual motiva muito os alunos. Como foi a recepção dos moradores locais às entrevistas dos estudantes?",
         replies: [
           {
             id: 1102,
-            authorName: "Samara Oliveira da Silva",
+            authorName: "Prof. Lucas Nogueira",
             createdAt: "2026-03-20T15:02:00.000Z",
             text: "Foi surpreendente! Os alunos se sentiram verdadeiros jornalistas e os moradores ficaram felizes em compartilhar a história da Lagoa, o que fortaleceu o sentimento de pertencimento da turma.",
           },
@@ -341,13 +341,13 @@ export const experiences: Experience[] = [
     comments: [
       {
         id: 1301,
-        authorName: "Joelto Pires Messias",
+        authorName: "Prof. Renato Alencar",
         createdAt: "2026-03-22T09:30:00.000Z",
         text: "Nossas temáticas sobre resíduos se complementam muito bem. Você chegou a considerar o uso de compostagem para os resíduos orgânicos identificados no refeitório, como sugeri na minha sequência?",
         replies: [
           {
             id: 1302,
-            authorName: "Shirley de Sousa Brito",
+            authorName: "Profa. Bianca Torres",
             createdAt: "2026-03-22T10:10:00.000Z",
             text: "Sim! Inclusive a ideia de campanhas de conscientização que propusemos pode desembocar justamente na criação de uma horta escolar adubada por essa compostagem.",
           },
@@ -401,13 +401,13 @@ export const experiences: Experience[] = [
     comments: [
       {
         id: 1501,
-        authorName: "Samara Oliveira da Silva",
+        authorName: "Profa. Carla Monteiro",
         createdAt: "2026-03-19T16:20:00.000Z",
         text: "O uso do Teachable Machine para visualizar erros genéticos é genial. Penso que eu poderia usar essa lógica para os alunos classificarem diferentes tipos de fitoplâncton e entenderem sua importância no ciclo do carbono oceânico.",
         replies: [
           {
             id: 1502,
-            authorName: "Roberth Cipriano",
+            authorName: "Prof. Eduardo Lima",
             createdAt: "2026-03-19T17:00:00.000Z",
             text: "Essa aplicação seria fantástica! A IA ajuda a tornar visível o microscópico, facilitando a compreensão da conexão entre a biologia celular e os impactos globais que você aborda.",
           },

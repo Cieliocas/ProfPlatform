@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useEffect, useState, useMemo } from "react"
 import Link from "next/link"
 import { Search, TrendingUp, Beaker } from "lucide-react"
 import { Navbar } from "@/components/navbar"
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select"
 import { highSchoolYears, biologyAxes, interconnectOptions, experiences as mockExperiences } from "@/src/lib/mock-data"
 import { PageLoader } from "@/components/ui/page-loader"
+import { experienceService } from "@/src/services/experienceService"
 
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
@@ -24,8 +25,45 @@ export default function DashboardPage() {
   const [selectedAxes, setSelectedAxes] = useState<string[]>([])
   const [selectedConnection, setSelectedConnection] = useState<string>("all")
 
-  const [experiences] = useState<any[]>(mockExperiences)
-  const [loading] = useState(false)
+  const [experiences, setExperiences] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let active = true
+
+    async function loadFeed() {
+      try {
+        const apiExperiences = await experienceService.fetchExperiences()
+        if (!active) return
+
+        if (Array.isArray(apiExperiences) && apiExperiences.length > 0) {
+          // Mantém API em prioridade (inclui posts novos) + completa com posts reais curados
+          const byTitle = new Map<string, any>()
+          apiExperiences.forEach((exp: any) => {
+            const key = String(exp.title || "").trim().toLowerCase()
+            byTitle.set(key, exp)
+          })
+          mockExperiences.forEach((exp: any) => {
+            const key = String(exp.title || "").trim().toLowerCase()
+            if (!byTitle.has(key)) byTitle.set(key, exp)
+          })
+          setExperiences(Array.from(byTitle.values()))
+        } else {
+          setExperiences(mockExperiences)
+        }
+      } catch {
+        if (!active) return
+        setExperiences(mockExperiences)
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    loadFeed()
+    return () => {
+      active = false
+    }
+  }, [])
 
   const normalize = (value: string) =>
     value

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
   ThumbsUp,
@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { DownloadPreviewDialog } from "@/components/experience/download-preview-dialog"
 import { useAuth } from "@/src/contexts/AuthContext"
+import { isExperienceSaved, toggleExperienceSaved } from "@/src/lib/saved-experiences"
 
 
 function getInitials(name: string) {
@@ -74,6 +75,10 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
   const [comment, setComment] = useState("")
   const upvoteCount = (experience.upvotes || 0) + (upvoted ? 1 : 0)
   const savedCount = (experience.savedCount || experience.saved_count || 0) + (saved ? 1 : 0)
+
+  useEffect(() => {
+    setSaved(isExperienceSaved(experience.id))
+  }, [experience.id])
 
   const initialComments = useMemo(() => {
     if (Array.isArray(experience.comments) && experience.comments.length > 0) {
@@ -219,7 +224,7 @@ export function ExperienceDetail({ experience }: ExperienceDetailProps) {
         <Button
           variant={saved ? "default" : "outline"}
           size="sm"
-          onClick={() => setSaved(!saved)}
+          onClick={() => setSaved(toggleExperienceSaved(experience.id))}
           className={
             saved
               ? "bg-moss text-warm-white hover:bg-moss/90"

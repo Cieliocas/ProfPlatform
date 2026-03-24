@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import Link from "next/link"
 import { ThumbsUp, Bookmark, Trash2, FileType, FileText, FileLineChart, Image as ImageIcon, Link2, Clock } from "lucide-react"
@@ -21,6 +21,7 @@ import { toast } from "sonner"
 import { useAuth } from "@/src/contexts/AuthContext"
 import { experienceService } from "@/src/services/experienceService"
 import { interconnectOptions } from "@/src/lib/mock-data"
+import { isExperienceSaved, toggleExperienceSaved } from "@/src/lib/saved-experiences"
 
 import { PublicProfileDialog } from "./profile/public-profile-dialog"
 import { DownloadPreviewDialog } from "./experience/download-preview-dialog"
@@ -46,6 +47,10 @@ export function ExperienceCard({ experience }: { experience: any }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [liked, setLiked] = useState(false)
   const [saved, setSaved] = useState(false)
+
+  useEffect(() => {
+    setSaved(isExperienceSaved(experience.id))
+  }, [experience.id])
 
   const handleDelete = async () => {
     setIsDeleting(true)
@@ -206,7 +211,10 @@ export function ExperienceCard({ experience }: { experience: any }) {
           <div className="ml-auto flex items-center gap-3">
             <button
               type="button"
-              onClick={() => setSaved((prev) => !prev)}
+              onClick={() => {
+                const nextSaved = toggleExperienceSaved(experience.id)
+                setSaved(nextSaved)
+              }}
               className={`flex items-center gap-1 text-xs ${saved ? "text-moss" : "text-muted-foreground"} hover:text-moss`}
             >
               <Bookmark className="h-3.5 w-3.5" />

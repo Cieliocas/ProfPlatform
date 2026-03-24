@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Bookmark } from "lucide-react"
 import { Navbar } from "@/components/navbar"
@@ -8,11 +8,68 @@ import { Footer } from "@/components/footer"
 import { ExperienceCard } from "@/components/experience-card"
 import { Button } from "@/components/ui/button"
 import { experiences as mockExperiences } from "@/src/lib/mock-data"
+import { experienceService } from "@/src/services/experienceService"
+import { getSavedExperienceIds, savedExperiencesStorageEvent } from "@/src/lib/saved-experiences"
+import { PageLoader } from "@/components/ui/page-loader"
 
 export default function SalvosPage() {
-  const savedExperiences = useMemo(() => {
-    return [...mockExperiences].sort((a, b) => (b.savedCount || 0) - (a.savedCount || 0)).slice(0, 6)
+  const [allExperiences, setAllExperiences] = useState<any[]>([])
+  const [savedIds, setSavedIds] = useState<string[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let active = true
+
+    async function loadSavedPageData() {
+      try {
+        const apiExperiences = await experienceService.fetchExperiences()
+        if (!active) return
+
+        if (Array.isArray(apiExperiences) && apiExperiences.length > 0) {
+          const byTitle = new Map<string, any>()
+          apiExperiences.forEach((exp: any) => {
+            const key = String(exp.title || "").trim().toLowerCase()
+            byTitle.set(key, exp)
+          })
+          mockExperiences.forEach((exp: any) => {
+            const key = String(exp.title || "").trim().toLowerCase()
+            if (!byTitle.has(key)) byTitle.set(key, exp)
+          })
+          setAllExperiences(Array.from(byTitle.values()))
+        } else {
+          setAllExperiences(mockExperiences)
+        }
+      } catch {
+        if (!active) return
+        setAllExperiences(mockExperiences)
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    function syncSavedIds() {
+      setSavedIds(getSavedExperienceIds())
+    }
+
+    loadSavedPageData()
+    syncSavedIds()
+    window.addEventListener(savedExperiencesStorageEvent, syncSavedIds)
+    window.addEventListener("storage", syncSavedIds)
+
+    return () => {
+      active = false
+      window.removeEventListener(savedExperiencesStorageEvent, syncSavedIds)
+      window.removeEventListener("storage", syncSavedIds)
+    }
   }, [])
+
+  const savedExperiences = useMemo(() => {
+    if (savedIds.length === 0) return []
+    const byId = new Map(allExperiences.map((exp: any) => [String(exp.id), exp]))
+    return savedIds
+      .map((id) => byId.get(String(id)))
+      .filter(Boolean)
+  }, [allExperiences, savedIds])
 
   return (
     <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
@@ -33,7 +90,9 @@ export default function SalvosPage() {
           </div>
 
           <div className="mt-6">
-            {savedExperiences.length > 0 ? (
+            {loading ? (
+              <PageLoader label="Carregando itens salvos..." />
+            ) : savedExperiences.length > 0 ? (
               <div className="space-y-6">
                 {savedExperiences.map((exp: any) => (
                   <ExperienceCard key={exp.id} experience={exp} />

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { DEMO_TOKEN, DEMO_USER } from '@/src/lib/demo-user';
 
 export async function GET(request: Request) {
     try {
@@ -11,10 +10,6 @@ export async function GET(request: Request) {
 
         if (!token) {
             return NextResponse.json({ detail: 'No auth token found' }, { status: 401 });
-        }
-
-        if (token === DEMO_TOKEN) {
-            return NextResponse.json(DEMO_USER, { status: 200 });
         }
 
         // Repassar para o FastAPI

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
+import { useState, useMemo } from "react"
 import Link from "next/link"
 import { Search, TrendingUp, Beaker } from "lucide-react"
 import { Navbar } from "@/components/navbar"
@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/select"
 import { highSchoolYears, biologyAxes, interconnectOptions, experiences as mockExperiences } from "@/src/lib/mock-data"
 import { PageLoader } from "@/components/ui/page-loader"
-import { experienceService } from "@/src/services/experienceService"
-import { getDemoPosts } from "@/src/lib/demo-posts"
 
 export default function DashboardPage() {
   const [search, setSearch] = useState("")
@@ -26,52 +24,8 @@ export default function DashboardPage() {
   const [selectedAxes, setSelectedAxes] = useState<string[]>([])
   const [selectedConnection, setSelectedConnection] = useState<string>("all")
 
-  const [experiences, setExperiences] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    let active = true
-
-    async function loadExperiences() {
-      try {
-        const apiExps = await experienceService.fetchExperiences()
-        if (!active) return
-
-        const localDemo = getDemoPosts()
-
-        if (Array.isArray(apiExps) && apiExps.length > 0) {
-          const byTitle = new Map<string, any>()
-          apiExps.forEach((exp: any) => {
-            const key = String(exp.title || "").trim().toLowerCase()
-            byTitle.set(key, exp)
-          })
-          mockExperiences.forEach((exp: any) => {
-            const key = String(exp.title || "").trim().toLowerCase()
-            if (!byTitle.has(key)) byTitle.set(key, exp)
-          })
-          localDemo.forEach((exp: any) => {
-            const key = String(exp.title || "").trim().toLowerCase()
-            byTitle.set(key, exp)
-          })
-          setExperiences(Array.from(byTitle.values()))
-          return
-        }
-
-        setExperiences([...localDemo, ...mockExperiences])
-      } catch (error) {
-        if (!active) return
-        const localDemo = getDemoPosts()
-        setExperiences([...localDemo, ...mockExperiences])
-      } finally {
-        if (active) setLoading(false)
-      }
-    }
-
-    loadExperiences()
-    return () => {
-      active = false
-    }
-  }, [])
+  const [experiences] = useState<any[]>(mockExperiences)
+  const [loading] = useState(false)
 
   const normalize = (value: string) =>
     value

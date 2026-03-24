@@ -440,7 +440,21 @@ export const experiences: Experience[] = [
 ]
 
 export const allTags = [
+  "Citologia (Biologia Celular)",
   "Ecologia",
+  "Evolucao",
+  "Fisiologia",
+  "Anatomia",
+  "Botanica",
+  "Zoologia",
+  "Microbiologia",
+  "Bioquimica",
+  "Biologia Molecular",
+  "Embriologia",
+  "Biotecnologia",
+  "Paleontologia",
+  "Histologia",
+  "Taxonomia",
   "Genetica",
   "Interdisciplinar",
   "Sustentabilidade",
@@ -464,7 +478,21 @@ export const highSchoolYears = [
 ]
 
 export const biologyAxes = [
+  "Citologia (Biologia Celular)",
   "Ecologia",
+  "Evolucao",
+  "Fisiologia",
+  "Anatomia",
+  "Botanica",
+  "Zoologia",
+  "Microbiologia",
+  "Bioquimica",
+  "Biologia Molecular",
+  "Embriologia",
+  "Biotecnologia",
+  "Paleontologia",
+  "Histologia",
+  "Taxonomia",
   "Genetica",
 ]
 
